@@ -1,4 +1,8 @@
+import os
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
+
+load_dotenv()
 
 class Settings(BaseSettings):
     project_name: str = "Intelligent Test Automation Platform"
@@ -18,10 +22,10 @@ class Settings(BaseSettings):
     qdrant_host: str = "localhost"
     qdrant_port: int = 6333
     
-    # OpenAI or LLM configuration (assuming local or mock for now, can be updated)
-    openai_api_key: str = "mock-key"
+    # Groq API configuration
+    groq_api_key: str = os.getenv("GROQ_API_KEY")
 
     class Config:
-        env_file = ".env"
+        env_file = "../.env"
 
 settings = Settings()

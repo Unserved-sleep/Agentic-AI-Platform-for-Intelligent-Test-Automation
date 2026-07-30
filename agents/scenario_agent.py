@@ -9,9 +9,9 @@ from models.test_scenario import ScenarioGenerationResult
 
 # Initialize the PydanticAI Agent
 # Using a default model, but this can be overridden when running the agent.
-# Using 'openai:gpt-4o' or similar high reasoning model is recommended.
+# Using 'groq:llama-3.3-70b-versatile' or similar high reasoning model is recommended.
 scenario_agent = Agent(
-    'openai:gpt-4o', 
+    'groq:llama-3.3-70b-versatile', 
     result_type=ScenarioGenerationResult,
     system_prompt=(
         "You are an Expert QA Automation Engineer and Test Architect. "
