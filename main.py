@@ -22,43 +22,34 @@ def main():
     - If no file is provided, the API should return a 400 Bad Request.
     """
     
-    print("Generating Test Scenarios...\n")
+    print("Starting LangGraph Auto-QA Loop...\n")
     
     try:
-        # Note: If running locally without a Groq key, you can switch the model
-        # to a local one supported by pydantic-ai, e.g., 'ollama:qwen2.5' or similar.
-        # We use a mocked print out here if API keys aren't set, or we try to run it.
-        # Ensure you have your environment variables set for the chosen LLM provider.
-        # For Groq: export GROQ_API_KEY='your-key'
+        from orchestration.loop import loop_graph
         
-        # Uncomment below to actually run if you have an API key configured.
-        result = generate_test_scenarios(sample_requirement)
+        initial_state = {
+            "requirement": sample_requirement,
+            "scenarios": [],
+            "current_scenario_idx": 0,
+            "scenario": None,
+            "script": None,
+            "execution_stdout": "",
+            "execution_stderr": "",
+            "execution_exit_code": -1,
+            "passed": False,
+            "feedback": "",
+            "retries": 0,
+            "is_script_repairable": True
+        }
         
-        # Save to JSON for RAG pipeline ingestion
-        output_file = "generated_scenarios.json"
-        with open(output_file, "w") as f:
-            f.write(result.to_rag_json())
-        
-        print(f"Scenarios successfully generated and saved to {output_file} in JSON format.")
-        
-        print("\nGenerating Playwright Scripts for each scenario...")
-        output_dir = "execution/generated_tests"
-        os.makedirs(output_dir, exist_ok=True)
-        
-        for idx, scenario in enumerate(result.scenarios):
-            print(f"Generating script for: {scenario.title}")
-            script_result = generate_playwright_script(scenario)
-            
-            script_path = os.path.join(output_dir, script_result.file_name)
-            with open(script_path, "w") as sf:
-                sf.write(script_result.code)
+        print("Invoking graph...")
+        # Stream the graph execution to see progress
+        for event in loop_graph.stream(initial_state):
+            for k, v in event.items():
+                pass # The nodes themselves print progress
                 
-            print(f" -> Saved to {script_path}")
+        print(f"\n=== LangGraph Auto-QA Pipeline Complete ===")
         
-        print(f"\n=== Pipeline Complete ===")
-        print(f"Scenarios generated: {len(result.scenarios)}")
-        print(f"Scripts saved to: {output_dir}/")
-
     except Exception as e:
         import traceback
         print(f"Error during scenario generation: {e}")
