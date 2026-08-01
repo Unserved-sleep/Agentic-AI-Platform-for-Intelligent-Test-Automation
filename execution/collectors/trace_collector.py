@@ -15,7 +15,7 @@ Generated trace archives are stored as execution artifacts.
 ----------------------------------------------------------------------
 
 TODO:
-Support trace configuration through execution settings.
+Support configurable trace options.
 
 ----------------------------------------------------------------------
 
@@ -30,8 +30,6 @@ Used by ArtifactCollector and PlaywrightUIRunner.
 ======================================================================
 """
 
-from pathlib import Path
-
 from playwright.sync_api import BrowserContext
 
 from execution.enums import ArtifactType
@@ -41,7 +39,7 @@ from execution.utils.artifact_path_builder import ArtifactPathBuilder
 
 class TraceCollector:
     """
-    Collects Playwright trace archives.
+    Collects Playwright trace artifacts.
     """
 
     def __init__(
@@ -50,7 +48,7 @@ class TraceCollector:
     ) -> None:
 
         self.path_builder = ArtifactPathBuilder(
-            artifacts_root=artifacts_root
+            artifacts_root=artifacts_root,
         )
 
     def start(
@@ -74,20 +72,20 @@ class TraceCollector:
         filename: str = "trace.zip",
     ) -> Artifact:
         """
-        Stop tracing and save archive.
+        Stop tracing and save the trace archive.
         """
 
-        trace_dir = self.path_builder.trace_directory(run_id)
+        trace_directory = self.path_builder.trace_directory(run_id)
 
-        trace_path = trace_dir / filename
+        trace_path = trace_directory / filename
 
         context.tracing.stop(
-            path=str(trace_path)
+            path=str(trace_path),
         )
 
         if not trace_path.exists():
             raise FileNotFoundError(
-                f"Trace archive not created: {trace_path}"
+                f"Trace archive was not created: {trace_path}"
             )
 
         return Artifact(

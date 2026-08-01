@@ -32,9 +32,7 @@ def test_trace_collector():
         )
 
         assert artifact.path.exists()
-
         assert artifact.path.suffix == ".zip"
-
         assert artifact.size_bytes > 0
 
         manager.close(session)

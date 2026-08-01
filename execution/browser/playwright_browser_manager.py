@@ -36,6 +36,9 @@ from uuid import uuid4
 
 from execution.browser.playwright_engine import PlaywrightEngine
 from execution.enums import BrowserType
+from execution.models.browser_context_options import (
+    BrowserContextOptions,
+)
 from execution.models.browser_session import BrowserSession
 
 
@@ -52,12 +55,19 @@ class PlaywrightBrowserManager:
         self.browser_type = browser_type
         self.headless = headless
 
-    def launch(self) -> BrowserSession:
+    def launch(
+            self,
+            context_options: BrowserContextOptions | None = None,
+    ):
+
+        if context_options is None:
+            context_options = BrowserContextOptions()
 
         if not self.engine.is_running:
             raise RuntimeError(
                 "PlaywrightEngine must be started before launching a browser."
             )
+
 
         launcher = {
             BrowserType.CHROMIUM: self.engine.playwright.chromium,
@@ -76,8 +86,11 @@ class PlaywrightBrowserManager:
             headless=self.headless
         )
 
-        context = browser.new_context()
 
+
+        context = browser.new_context(
+            **context_options.to_playwright_dict(),
+        )
         page = context.new_page()
 
         return BrowserSession(
@@ -110,8 +123,7 @@ class PlaywrightBrowserManager:
                 session.browser.close()
 
         finally:
-            session.is_active = False
-
+            session.deactivate()
 
     def is_alive(
         self,

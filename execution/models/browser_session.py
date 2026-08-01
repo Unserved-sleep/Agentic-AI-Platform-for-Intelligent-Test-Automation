@@ -8,50 +8,120 @@ Owner:
 Engineer 3 – Browser Automation, Frontend & DevOps
 
 Purpose:
-Represents an active browser session during execution.
+Represents a single browser execution session.
 
-Stores runtime Playwright objects required by the execution
-engine. This model is NOT intended for serialization.
+The BrowserSession is the central execution object shared
+across the Browser Manager, Execution Runner and Artifact
+Collectors.
 
 ----------------------------------------------------------------------
 
 TODO:
-Support multiple pages/tabs per session.
+Support browser storage state and execution metadata.
 
 ----------------------------------------------------------------------
 
 DUMMY:
-None
+video_directory is None until VideoCollector integration.
 
 ----------------------------------------------------------------------
 
 INTEGRATION:
-None
+Shared across all execution components.
 
 ======================================================================
 """
 
-from dataclasses import dataclass
-from typing import Optional
+from datetime import datetime
+from pathlib import Path
+from typing import Any
 
-from playwright.sync_api import Browser
-from playwright.sync_api import BrowserContext
-from playwright.sync_api import Page
+from pydantic import ConfigDict, Field
 
 from execution.enums import BrowserType
+from execution.models.artifact import Artifact
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+)
 
 
-@dataclass(slots=True)
-class BrowserSession:
+class BrowserSession(BaseModel):
+    """
+    Represents an active browser execution session.
+    """
 
-    browser_type: BrowserType
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+        extra="forbid",
+    )
 
-    browser: Browser
+    session_id: str = Field(
+        ...,
+        description="Unique browser session identifier.",
+    )
 
-    context: BrowserContext
+    browser_type: BrowserType = Field(
+        ...,
+        description="Browser used for execution.",
+    )
 
-    page: Page
+    browser: Any = Field(
+        ...,
+        description="Playwright browser instance.",
+    )
 
-    session_id: str
+    context: Any = Field(
+        ...,
+        description="Playwright browser context.",
+    )
 
-    is_active: bool = True
+    page: Any = Field(
+        ...,
+        description="Active Playwright page.",
+    )
+
+    is_active: bool = Field(
+        default=True,
+        description="Whether the browser session is active.",
+    )
+
+    started_at: datetime = Field(
+        default_factory=datetime.utcnow,
+        description="Session start time.",
+    )
+
+    video_directory: Path | None = Field(
+        default=None,
+        description="Directory where Playwright stores videos.",
+    )
+
+    artifacts: list[Artifact] = Field(
+        default_factory=list,
+        description="Artifacts produced during this execution.",
+    )
+
+    metadata: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Additional execution metadata.",
+    )
+
+    def add_artifact(
+        self,
+        artifact: Artifact,
+    ) -> None:
+        """
+        Register a newly created execution artifact.
+        """
+
+        self.artifacts.append(artifact)
+
+    def deactivate(self) -> None:
+        """
+        Mark this browser session as inactive.
+        """
+
+        self.is_active = False
