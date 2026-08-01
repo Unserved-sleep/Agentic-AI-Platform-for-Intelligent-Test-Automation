@@ -46,6 +46,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from execution.enums import ExecutionType
 
 class ExecutionRequest(BaseModel):
     """
@@ -66,9 +67,9 @@ class ExecutionRequest(BaseModel):
         description="Unique execution identifier."
     )
 
-    execution_type: str = Field(
+    execution_type: ExecutionType = Field(
         ...,
-        description="Execution type (ui/api)."
+        description="Execution type."
     )
 
     script_path: str = Field(
