@@ -4,6 +4,11 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 
 
+class TestLevel(str, Enum):
+    UI = "UI"
+    API_CONTRACT = "API Contract"
+    API_BACKEND = "API Backend"
+
 class TestCategory(str, Enum):
     POSITIVE = "Positive"
     NEGATIVE = "Negative"
@@ -62,7 +67,7 @@ class TestScenario(BaseModel):
     pre_conditions: List[str] = Field(default_factory=list, description="List of pre-conditions that must be met before executing the test")
     steps: List[str] = Field(..., description="Ordered list of steps to execute the test")
     expected_result: str = Field(..., description="The expected outcome after executing the steps")
-    is_api: bool = Field(..., description="True if this is a backend API test, False if it is a UI/Browser test")
+    test_level: TestLevel = Field(..., description="Whether this is a UI test, an API Contract test, or an API Backend logic test")
 
 
 class ScenarioGenerationResult(BaseModel):
