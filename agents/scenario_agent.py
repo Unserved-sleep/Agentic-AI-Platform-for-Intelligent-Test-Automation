@@ -6,12 +6,14 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from models.test_scenario import ScenarioGenerationResult
+from shared.deps import AgentDeps
 
 # Initialize the PydanticAI Agent
 # Using a default model, but this can be overridden when running the agent.
-# Using 'groq:openai/gpt-oss-120b' or similar high reasoning model is recommended.
+# Using 'groq:llama-3.3-70b-versatile' or similar high reasoning model is recommended.
 scenario_agent = Agent(
     'groq:llama-3.3-70b-versatile', 
+    deps_type=AgentDeps,
     output_type=ScenarioGenerationResult,
     retries=3,
     system_prompt=(
@@ -53,11 +55,25 @@ scenario_agent = Agent(
         "- `UI`: Browser tests interacting with the frontend.\n"
         "- `API Contract`: Backend API tests verifying surface-level checks like status codes, request/response schemas, and headers.\n"
         "- `API Backend`: Backend API tests verifying functional business logic, state changes, and data persistence in the database.\n\n"
-        "Ensure every scenario has clear steps and unambiguous expected results."
+        "Ensure every scenario has clear steps and unambiguous expected results.\n"
+        "If the requirement text is a user story or high-level summary, use the `search_knowledge_base` tool to query for specific backend constraints, policy rules, and detailed documentation."
     )
 )
 
-def generate_test_scenarios(requirement_text: str, model: str = None) -> ScenarioGenerationResult:
+@scenario_agent.tool
+def search_knowledge_base(ctx: RunContext[AgentDeps], query: str) -> dict:
+    """
+    Search the centralized knowledge base (RAG) for documentation, policy guidelines, and business rules.
+    Use this to look up constraints (like age limits for insurance) when the user story doesn't specify them.
+    
+    Args:
+        query: The search query string.
+    """
+    if ctx.deps.rag_retriever:
+        return ctx.deps.rag_retriever.retrieve_context(query)
+    return {"error": "RAG retriever not initialized."}
+
+def generate_test_scenarios(requirement_text: str, deps: AgentDeps, model: str = None) -> ScenarioGenerationResult:
     """
     Generate test scenarios given a requirement text.
     
@@ -74,6 +90,7 @@ def generate_test_scenarios(requirement_text: str, model: str = None) -> Scenari
         
     result = scenario_agent.run_sync(
         f"Generate test scenarios based on the following requirement:\n\n{requirement_text}",
+        deps=deps,
         **kwargs
     )
     return result.output

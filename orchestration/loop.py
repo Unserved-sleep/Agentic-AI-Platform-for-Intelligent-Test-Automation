@@ -13,6 +13,11 @@ from models.playwright_script import PlaywrightScript
 from agents.scenario_agent import generate_test_scenarios
 from agents.playwright_agent import generate_playwright_script
 from agents.failure_analysis_agent import analyze_failure, FailureDiagnosis
+from shared.deps import AgentDeps
+from rag.retriever import rag_retriever
+
+# Initialize common dependencies for all agents in the loop
+global_deps = AgentDeps(rag_retriever=rag_retriever)
 
 class GraphState(TypedDict):
     requirement: str
@@ -38,7 +43,7 @@ def planner_node(state: GraphState):
     
     if not scenarios:
         print("Generating test scenarios from requirement...")
-        scenarios_result = generate_test_scenarios(requirement)
+        scenarios_result = generate_test_scenarios(requirement, deps=global_deps)
         scenarios = scenarios_result.scenarios
         print(f"Generated {len(scenarios)} scenarios.")
     
@@ -77,7 +82,7 @@ def generate_node(state: GraphState):
         scenario_to_gen = scenario
 
     print("Generating Playwright script...")
-    script_result = generate_playwright_script(scenario_to_gen)
+    script_result = generate_playwright_script(scenario_to_gen, deps=global_deps)
     return {"script": script_result}
 
 def execute_node(state: GraphState):

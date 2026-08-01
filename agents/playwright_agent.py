@@ -1,4 +1,4 @@
-from pydantic_ai import Agent
+from pydantic_ai import Agent, RunContext
 import sys
 import os
 import json
@@ -7,20 +7,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from models.playwright_script import PlaywrightScript
 from models.test_scenario import TestScenario, TestLevel
-
-def get_db_assertion_context() -> str:
-    """Reads the DBAssertionHelper source to provide context to the LLM."""
-    try:
-        assertions_path = os.path.join(os.path.dirname(__file__), '..', 'database', 'assertions.py')
-        with open(assertions_path, 'r') as f:
-            return f.read()
-    except Exception:
-        return "Could not load DBAssertionHelper context."
-
-db_context = get_db_assertion_context()
+from shared.deps import AgentDeps
 
 playwright_agent = Agent(
     'groq:llama-3.3-70b-versatile',
+    deps_type=AgentDeps,
     retries=3,
     system_prompt=(
         "You are an Expert SDET (Software Development Engineer in Test). "
@@ -30,9 +21,6 @@ playwright_agent = Agent(
         "2. UI Tests (`test_level` = UI): Implement the Page Object Model (POM). Define a Page class at the top of the file. Use `page` fixture and standard `expect` assertions.\n"
         "3. API Contract Tests (`test_level` = API_CONTRACT): Do NOT use browser fixtures. Use Playwright's `request` fixture (APIRequestContext) to call endpoints and verify HTTP status codes, JSON schemas, headers, etc.\n"
         "4. API Backend Tests (`test_level` = API_BACKEND): Use `request` fixture to trigger the backend action. Then, you MUST verify the database state using the provided DBAssertionHelper.\n\n"
-        "--- DBAssertionHelper Source Code ---\n"
-        f"{db_context}\n"
-        "-------------------------------------\n\n"
         "When writing API_BACKEND tests, you must import the helper like this:\n"
         "`from database.assertions import db_asserter`\n"
         "And use it appropriately with a mocked or injected DB session (e.g. assume a `db_session` fixture exists if needed, or instantiate it if the helper handles it).\n\n"
@@ -41,7 +29,24 @@ playwright_agent = Agent(
     )
 )
 
-def generate_playwright_script(scenario: TestScenario, model: str = None) -> PlaywrightScript:
+@playwright_agent.system_prompt
+def add_db_context(ctx: RunContext[AgentDeps]) -> str:
+    """Dynamically reads the DBAssertionHelper source to provide context to the LLM."""
+    db_context = ""
+    try:
+        path = ctx.deps.db_context_path if ctx.deps.db_context_path else os.path.join(os.path.dirname(__file__), '..', 'database', 'assertions.py')
+        with open(path, 'r') as f:
+            db_context = f.read()
+    except Exception:
+        db_context = "Could not load DBAssertionHelper context."
+        
+    return (
+        "--- DBAssertionHelper Source Code ---\n"
+        f"{db_context}\n"
+        "-------------------------------------\n"
+    )
+
+def generate_playwright_script(scenario: TestScenario, deps: AgentDeps, model: str = None) -> PlaywrightScript:
     """
     Generate a Playwright Python script from a TestScenario.
     
@@ -58,7 +63,7 @@ def generate_playwright_script(scenario: TestScenario, model: str = None) -> Pla
         
     prompt = f"Please generate a Playwright script for the following scenario:\n\n{scenario.model_dump_json(indent=2)}"
     
-    result = playwright_agent.run_sync(prompt, **kwargs)
+    result = playwright_agent.run_sync(prompt, deps=deps, **kwargs)
     
     # Strip markdown if the LLM still included it
     code_text = result.output
