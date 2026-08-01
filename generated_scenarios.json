@@ -1,0 +1,363 @@
+{
+  "requirement_id": "Document Upload API",
+  "created_at": "2024-03-16T10:00:00Z",
+  "scenarios": [
+    {
+      "id": "TS-001",
+      "title": "Happy Path - Document Upload",
+      "category": "Positive",
+      "subcategory": "Happy Path",
+      "priority": "High",
+      "description": "Upload a document via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with a valid document attached as multipart/form-data",
+        "Verify the request returns a 201 Created status code"
+      ],
+      "expected_result": "The document is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "API Backend"
+    },
+    {
+      "id": "TS-002",
+      "title": "Alternate Flow - Document Upload with Different File Types",
+      "category": "Positive",
+      "subcategory": "Alternate Flow",
+      "priority": "Medium",
+      "description": "Upload different types of documents via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with different types of documents (e.g., PDF, DOCX, JPEG) attached as multipart/form-data",
+        "Verify the request returns a 201 Created status code for each file type"
+      ],
+      "expected_result": "Each document is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "API Backend"
+    },
+    {
+      "id": "TS-003",
+      "title": "Role Based - Document Upload by Different User Roles",
+      "category": "Positive",
+      "subcategory": "Role Based",
+      "priority": "Medium",
+      "description": "Upload a document via the /api/documents POST endpoint with different user roles",
+      "pre_conditions": [
+        "User is authenticated with different roles"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with a valid document attached as multipart/form-data for each user role",
+        "Verify the request returns a 201 Created status code for each user role"
+      ],
+      "expected_result": "The document is uploaded and a Document record is persisted in the database with the correct filename for each user role",
+      "test_level": "API Backend"
+    },
+    {
+      "id": "TS-004",
+      "title": "Invalid Input - No File Provided",
+      "category": "Negative",
+      "subcategory": "Invalid Input",
+      "priority": "High",
+      "description": "Upload a document via the /api/documents POST endpoint without providing a file",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents without a file attached",
+        "Verify the request returns a 400 Bad Request status code"
+      ],
+      "expected_result": "The API returns a 400 Bad Request status code",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-005",
+      "title": "Invalid Input - Invalid File Type",
+      "category": "Negative",
+      "subcategory": "Invalid Input",
+      "priority": "Medium",
+      "description": "Upload a document via the /api/documents POST endpoint with an invalid file type",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with an invalid file type (e.g., EXE) attached as multipart/form-data",
+        "Verify the request returns a 400 Bad Request status code"
+      ],
+      "expected_result": "The API returns a 400 Bad Request status code",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-006",
+      "title": "Invalid State - Unauthenticated User",
+      "category": "Negative",
+      "subcategory": "Invalid State",
+      "priority": "High",
+      "description": "Upload a document via the /api/documents POST endpoint without authentication",
+      "pre_conditions": [
+        "User is not authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents without authentication",
+        "Verify the request returns a 401 Unauthorized status code"
+      ],
+      "expected_result": "The API returns a 401 Unauthorized status code",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-007",
+      "title": "Minimum Value - Smallest File Size",
+      "category": "Boundary",
+      "subcategory": "Minimum Value",
+      "priority": "Low",
+      "description": "Upload the smallest possible file via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with a file of size 1 byte attached as multipart/form-data",
+        "Verify the request returns a 201 Created status code"
+      ],
+      "expected_result": "The file is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "API Backend"
+    },
+    {
+      "id": "TS-008",
+      "title": "Maximum Value - Largest File Size",
+      "category": "Boundary",
+      "subcategory": "Maximum Value",
+      "priority": "Low",
+      "description": "Upload the largest possible file via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with a file of maximum allowed size attached as multipart/form-data",
+        "Verify the request returns a 201 Created status code"
+      ],
+      "expected_result": "The file is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "API Backend"
+    },
+    {
+      "id": "TS-009",
+      "title": "Length - Filename Length Limit",
+      "category": "Boundary",
+      "subcategory": "Length",
+      "priority": "Low",
+      "description": "Upload a file with a long filename via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with a file having a filename of maximum allowed length attached as multipart/form-data",
+        "Verify the request returns a 201 Created status code"
+      ],
+      "expected_result": "The file is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "API Backend"
+    },
+    {
+      "id": "TS-010",
+      "title": "Numeric Range - File Size Range",
+      "category": "Boundary",
+      "subcategory": "Numeric Range",
+      "priority": "Low",
+      "description": "Upload files of different sizes within the allowed range via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with files of different sizes within the allowed range attached as multipart/form-data",
+        "Verify the request returns a 201 Created status code for each file size"
+      ],
+      "expected_result": "Each file is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "API Backend"
+    },
+    {
+      "id": "TS-011",
+      "title": "Keyboard - Upload via Keyboard Navigation",
+      "category": "Accessibility",
+      "subcategory": "Keyboard",
+      "priority": "Medium",
+      "description": "Upload a document via the /api/documents POST endpoint using keyboard navigation",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Use keyboard navigation to select a file and send a POST request to /api/documents",
+        "Verify the request returns a 201 Created status code"
+      ],
+      "expected_result": "The file is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "UI"
+    },
+    {
+      "id": "TS-012",
+      "title": "Screen Reader - Upload via Screen Reader",
+      "category": "Accessibility",
+      "subcategory": "Screen Reader",
+      "priority": "Medium",
+      "description": "Upload a document via the /api/documents POST endpoint using a screen reader",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Use a screen reader to select a file and send a POST request to /api/documents",
+        "Verify the request returns a 201 Created status code"
+      ],
+      "expected_result": "The file is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "UI"
+    },
+    {
+      "id": "TS-013",
+      "title": "Focus - Correct Focus Management",
+      "category": "Accessibility",
+      "subcategory": "Focus",
+      "priority": "Medium",
+      "description": "Upload a document via the /api/documents POST endpoint with correct focus management",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Select a file and send a POST request to /api/documents, verifying correct focus management",
+        "Verify the request returns a 201 Created status code"
+      ],
+      "expected_result": "The file is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "UI"
+    },
+    {
+      "id": "TS-014",
+      "title": "SQL Injection - Malicious File Upload",
+      "category": "Security",
+      "subcategory": "SQL Injection",
+      "priority": "High",
+      "description": "Attempt to upload a malicious file via the /api/documents POST endpoint to test for SQL injection",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with a malicious file attached as multipart/form-data",
+        "Verify the request returns a 400 Bad Request status code"
+      ],
+      "expected_result": "The API returns a 400 Bad Request status code and does not persist the malicious file",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-015",
+      "title": "XSS - Malicious File Upload",
+      "category": "Security",
+      "subcategory": "XSS",
+      "priority": "High",
+      "description": "Attempt to upload a malicious file via the /api/documents POST endpoint to test for cross-site scripting",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with a malicious file attached as multipart/form-data",
+        "Verify the request returns a 400 Bad Request status code"
+      ],
+      "expected_result": "The API returns a 400 Bad Request status code and does not persist the malicious file",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-016",
+      "title": "CSRF - Cross-Site Request Forgery",
+      "category": "Security",
+      "subcategory": "CSRF",
+      "priority": "High",
+      "description": "Test for cross-site request forgery protection via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents from a different origin",
+        "Verify the request returns a 403 Forbidden status code"
+      ],
+      "expected_result": "The API returns a 403 Forbidden status code and does not process the request",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-017",
+      "title": "Authentication - Unauthenticated User",
+      "category": "Security",
+      "subcategory": "Authentication",
+      "priority": "High",
+      "description": "Test for authentication protection via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is not authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents without authentication",
+        "Verify the request returns a 401 Unauthorized status code"
+      ],
+      "expected_result": "The API returns a 401 Unauthorized status code and does not process the request",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-018",
+      "title": "Authorization - Insufficient Permissions",
+      "category": "Security",
+      "subcategory": "Authorization",
+      "priority": "High",
+      "description": "Test for authorization protection via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated with insufficient permissions"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents with insufficient permissions",
+        "Verify the request returns a 403 Forbidden status code"
+      ],
+      "expected_result": "The API returns a 403 Forbidden status code and does not process the request",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-019",
+      "title": "Session - Session Management",
+      "category": "Security",
+      "subcategory": "Session",
+      "priority": "Medium",
+      "description": "Test for session management via the /api/documents POST endpoint",
+      "pre_conditions": [
+        "User is authenticated"
+      ],
+      "steps": [
+        "Send a POST request to /api/documents and verify session management",
+        "Verify the request returns a 201 Created status code"
+      ],
+      "expected_result": "The file is uploaded and a Document record is persisted in the database with the correct filename",
+      "test_level": "API Contract"
+    },
+    {
+      "id": "TS-020",
+      "title": "Load - High Concurrent User Load",
+      "category": "Performance",
+      "subcategory": "Load",
+      "priority": "Medium",
+      "description": "Test the /api/documents POST endpoint under high concurrent user load",
+      "pre_conditions": [
+        "Multiple users are authenticated"
+      ],
+      "steps": [
+        "Send multiple concurrent POST requests to /api/documents",
+        "Verify the requests return a 201 Created status code"
+      ],
+      "expected_result": "The files are uploaded and Document records are persisted in the database with the correct filenames",
+      "test_level": "API Backend"
+    },
+    {
+      "id": "TS-021",
+      "title": "Stress - System Behavior Beyond Capacity",
+      "category": "Performance",
+      "subcategory": "Stress",
+      "priority": "Low",
+      "description": "Test the /api/documents POST endpoint beyond its capacity",
+      "pre_conditions": [
+        "Multiple users are authenticated"
+      ],
+      "steps": [
+        "Send a large number of concurrent POST requests to /api/documents",
+        "Verify the system behaves as expected and returns a 201 Created status code for each request"
+      ],
+      "expected_result": "The system behaves as expected and the files are uploaded and Document records are persisted in the database with the correct filenames",
+      "test_level": "API Backend"
+    }
+  ]
+}

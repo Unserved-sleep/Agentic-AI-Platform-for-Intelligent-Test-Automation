@@ -9,23 +9,50 @@ from models.test_scenario import ScenarioGenerationResult
 
 # Initialize the PydanticAI Agent
 # Using a default model, but this can be overridden when running the agent.
-# Using 'groq:llama-3.3-70b-versatile' or similar high reasoning model is recommended.
+# Using 'groq:openai/gpt-oss-120b' or similar high reasoning model is recommended.
 scenario_agent = Agent(
     'groq:llama-3.3-70b-versatile', 
-    result_type=ScenarioGenerationResult,
+    output_type=ScenarioGenerationResult,
+    retries=3,
     system_prompt=(
         "You are an Expert QA Automation Engineer and Test Architect. "
         "Your task is to analyze user stories, Business Requirement Documents (BRDs), or API documentation "
-        "and generate a comprehensive suite of Test Scenarios.\n\n"
-        "You must generate test cases covering the following categories:\n"
-        "1. Positive (Happy Path, Alternate Flow, Role Based)\n"
-        "2. Negative (Invalid Input, Missing Input, Invalid State)\n"
-        "3. Boundary (Minimum Value, Maximum Value, Length, Numeric Range)\n"
-        "4. Accessibility (Keyboard, Screen Reader, Focus)\n"
-        "5. Security (SQL Injection, XSS, CSRF, Authentication, Authorization, Session)\n"
-        "6. Performance (Load, Stress)\n\n"
-        "You must ensure to output both UI/Browser tests (is_api=False) AND backend API tests (is_api=True) if applicable to the requirements. "
-        "API tests should verify backend business logic, state changes in the database, and API contracts. "
+        "and generate a COMPREHENSIVE suite of Test Scenarios.\n\n"
+        "CRITICAL: You MUST generate AT LEAST ONE test scenario for EVERY subcategory listed below, "
+        "where applicable to the given requirement. This means you should produce approximately 20 scenarios. "
+        "Do NOT be lazy. Do NOT skip subcategories. If a subcategory is even tangentially applicable, include a scenario for it.\n\n"
+        "Categories and their subcategories:\n"
+        "1. Positive:\n"
+        "   - Happy Path: The standard successful flow.\n"
+        "   - Alternate Flow: A valid but non-default path.\n"
+        "   - Role Based: Different user roles performing the action.\n"
+        "2. Negative:\n"
+        "   - Invalid Input: Providing wrong data types or formats.\n"
+        "   - Missing Input: Omitting required fields.\n"
+        "   - Invalid State: Performing the action when preconditions are not met.\n"
+        "3. Boundary:\n"
+        "   - Minimum Value: Testing with the smallest allowed value.\n"
+        "   - Maximum Value: Testing with the largest allowed value.\n"
+        "   - Length: Testing string length limits.\n"
+        "   - Numeric Range: Testing numeric boundaries.\n"
+        "4. Accessibility:\n"
+        "   - Keyboard: Full keyboard navigation support.\n"
+        "   - Screen Reader: Screen reader compatibility.\n"
+        "   - Focus: Correct focus management.\n"
+        "5. Security:\n"
+        "   - SQL Injection: Attempting SQL injection attacks.\n"
+        "   - XSS: Attempting cross-site scripting.\n"
+        "   - CSRF: Cross-site request forgery checks.\n"
+        "   - Authentication: Verifying auth is required.\n"
+        "   - Authorization: Verifying correct role permissions.\n"
+        "   - Session: Session management and timeout.\n"
+        "6. Performance:\n"
+        "   - Load: High concurrent user load.\n"
+        "   - Stress: System behavior beyond capacity.\n\n"
+        "You must output tests at the appropriate test_level:\n"
+        "- `UI`: Browser tests interacting with the frontend.\n"
+        "- `API Contract`: Backend API tests verifying surface-level checks like status codes, request/response schemas, and headers.\n"
+        "- `API Backend`: Backend API tests verifying functional business logic, state changes, and data persistence in the database.\n\n"
         "Ensure every scenario has clear steps and unambiguous expected results."
     )
 )
@@ -49,4 +76,4 @@ def generate_test_scenarios(requirement_text: str, model: str = None) -> Scenari
         f"Generate test scenarios based on the following requirement:\n\n{requirement_text}",
         **kwargs
     )
-    return result.data
+    return result.output

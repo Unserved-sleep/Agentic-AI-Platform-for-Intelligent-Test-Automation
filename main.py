@@ -1,24 +1,25 @@
 import json
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 from agents.scenario_agent import generate_test_scenarios
 from agents.playwright_agent import generate_playwright_script
 
 def main():
-    # Example User Story / BRD extract
+    # Example User Story / API documentation
     sample_requirement = """
-    User Story: Claims Portal Approval Workflow
+    User Story: Document Upload API
     
-    As a Claims Adjuster, 
-    I want to review and approve submitted claims on the Claims Portal, 
-    so that payouts can be processed.
+    As a system user, 
+    I want to upload a document via the /api/documents POST endpoint, 
+    so that it is securely stored in the system.
     
     Acceptance Criteria:
-    - The Claims Adjuster must be logged in to view the dashboard.
-    - Only users with the 'Claims Adjuster' role can approve a claim. Users with 'Read-Only' role cannot.
-    - When a claim is approved (POST /claims/{id}/approve), the claim status must change to APPROVED.
-    - A payout record must be created in the database upon successful approval.
-    - If the claim ID is invalid, the API should return a 404 Not Found.
-    - The UI must be accessible via keyboard navigation.
+    - The API must accept multipart/form-data.
+    - If the request is successful, it should return a 201 Created status code.
+    - Upon successful upload, a Document record must be persisted in the PostgreSQL database with the correct filename.
+    - If no file is provided, the API should return a 400 Bad Request.
     """
     
     print("Generating Test Scenarios...\n")
@@ -54,12 +55,14 @@ def main():
                 
             print(f" -> Saved to {script_path}")
         
-        print("Scenarios would be generated based on the sample requirement.")
-        print("Playwright scripts would then be generated for each scenario and saved to the 'execution' folder.")
-        print("To run, uncomment the execution lines in main.py and ensure LLM API keys are set.")
+        print(f"\n=== Pipeline Complete ===")
+        print(f"Scenarios generated: {len(result.scenarios)}")
+        print(f"Scripts saved to: {output_dir}/")
 
     except Exception as e:
+        import traceback
         print(f"Error during scenario generation: {e}")
+        traceback.print_exc()
 
 if __name__ == "__main__":
     main()
