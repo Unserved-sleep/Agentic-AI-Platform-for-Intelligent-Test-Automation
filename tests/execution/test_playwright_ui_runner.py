@@ -1,43 +1,95 @@
 from uuid import uuid4
+from unittest.mock import MagicMock
 
-from execution.browser.browser_factory import BrowserFactory
-from execution.browser.playwright_engine import PlaywrightEngine
-from execution.enums import BrowserType, ExecutionType
-from execution.models.execution_request import ExecutionRequest
+from execution.collectors.artifact_collector import ArtifactCollector
+from execution.enums import ExecutionStatus, ExecutionType
 from execution.runners.playwright_ui_runner import PlaywrightUIRunner
-
-
-def demo_test(page):
-    page.goto("https://example.com")
-    assert page.title() == "Example Domain"
+from execution.models.execution_request import ExecutionRequest
 
 
 def test_ui_runner():
 
-    engine = PlaywrightEngine()
-    engine.start()
+    # Arrange
+    browser_manager = MagicMock()
+    artifact_collector = MagicMock(spec=ArtifactCollector)
 
-    try:
+    session = MagicMock()
+    session.page = MagicMock()
 
-        manager = BrowserFactory.create(
-            engine=engine,
-            browser_type=BrowserType.CHROMIUM,
-        )
+    browser_manager.launch.return_value = session
+    artifact_collector.collect.return_value = MagicMock()
 
-        runner = PlaywrightUIRunner(manager)
+    runner = PlaywrightUIRunner(
+        browser_manager=browser_manager,
+        artifact_collector=artifact_collector,
+    )
 
-        request = ExecutionRequest(
-            run_id=str(uuid4()),
-            execution_type=ExecutionType.UI,
-        )
+    request = ExecutionRequest(
+        run_id=str(uuid4()),
+        execution_type=ExecutionType.UI,
+        script_path="tests/dummy.py",
+    )
 
-        result = runner.execute(
-            request,
-            demo_test,
-        )
+    def dummy_test(page):
+        assert page is session.page
 
-        assert result.status.value == "PASSED"
+    # Act
+    result = runner.execute(
+        request=request,
+        test_function=dummy_test,
+    )
 
-    finally:
+    # Assert
+    assert result.status == ExecutionStatus.PASSED
 
-        engine.stop()
+    browser_manager.launch.assert_called_once()
+
+    artifact_collector.collect.assert_called_once_with(
+        session=session,
+    )
+
+    browser_manager.close.assert_called_once_with(
+        session,
+    )
+
+
+def test_ui_runner_failure():
+
+    browser_manager = MagicMock()
+    artifact_collector = MagicMock(spec=ArtifactCollector)
+
+    session = MagicMock()
+    session.page = MagicMock()
+
+    browser_manager.launch.return_value = session
+    artifact_collector.collect.return_value = MagicMock()
+
+    runner = PlaywrightUIRunner(
+        browser_manager=browser_manager,
+        artifact_collector=artifact_collector,
+    )
+
+    request = ExecutionRequest(
+        run_id=str(uuid4()),
+        execution_type=ExecutionType.UI,
+        script_path="tests/dummy.py",
+    )
+
+    def failing_test(page):
+        raise RuntimeError("Intentional failure")
+
+    result = runner.execute(
+        request=request,
+        test_function=failing_test,
+    )
+
+    assert result.status == ExecutionStatus.FAILED
+    assert "Intentional failure" in result.error_message
+
+    artifact_collector.collect.assert_called_once_with(
+        session=session,
+    )
+
+    browser_manager.close.assert_called_once_with(
+        session,
+    )

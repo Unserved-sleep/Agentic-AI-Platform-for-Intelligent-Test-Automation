@@ -14,11 +14,11 @@ execution infrastructure.
 Responsibilities:
 - Launch browser sessions
 - Execute Playwright UI test functions
+- Collect execution artifacts
 - Build standardized execution results
 
 This runner intentionally does NOT handle:
 - Report generation
-- Artifact collection
 - Retry logic
 - Self-healing
 - AI orchestration
@@ -46,7 +46,12 @@ from datetime import datetime
 import traceback
 from typing import Callable
 
-from execution.browser.playwright_browser_manager import PlaywrightBrowserManager
+from execution.browser.playwright_browser_manager import (
+    PlaywrightBrowserManager,
+)
+from execution.collectors.artifact_collector import (
+    ArtifactCollector,
+)
 from execution.enums import ExecutionStatus
 from execution.models.execution_request import ExecutionRequest
 from execution.models.execution_result import ExecutionResult
@@ -61,6 +66,7 @@ class PlaywrightUIRunner:
     def __init__(
         self,
         browser_manager: PlaywrightBrowserManager,
+        artifact_collector: ArtifactCollector,
     ) -> None:
         """
         Initialize the UI runner.
@@ -68,10 +74,14 @@ class PlaywrightUIRunner:
         Parameters
         ----------
         browser_manager:
-            Browser manager responsible for browser lifecycle.
+            Browser lifecycle manager.
+
+        artifact_collector:
+            Coordinates execution artifact collection.
         """
 
         self.browser_manager = browser_manager
+        self.artifact_collector = artifact_collector
 
     def execute(
         self,
@@ -109,16 +119,19 @@ class PlaywrightUIRunner:
         except Exception as ex:
 
             status = ExecutionStatus.FAILED
-
             error_message = str(ex)
-
             stack_trace = traceback.format_exc()
 
         finally:
 
+            artifact_bundle = self.artifact_collector.collect(
+                session=session,
+            )
+
             self.browser_manager.close(session)
 
         completed_at = datetime.utcnow()
+
 
         return ExecutionResult(
             run_id=request.run_id,
