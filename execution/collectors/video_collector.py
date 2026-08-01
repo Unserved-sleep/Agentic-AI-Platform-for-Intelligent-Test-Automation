@@ -8,13 +8,13 @@ Owner:
 Engineer 3 – Browser Automation, Frontend & DevOps
 
 Purpose:
-Provides Playwright video recording configuration and
-collects recorded video artifacts after execution.
+Builds BrowserContextOptions required for Playwright video
+recording and collects generated video artifacts.
 
 ----------------------------------------------------------------------
 
 TODO:
-Support configurable video resolution.
+Support configurable video size and naming.
 
 ----------------------------------------------------------------------
 
@@ -32,10 +32,10 @@ execution completion.
 
 from pathlib import Path
 
-from playwright.sync_api import BrowserContext
-
 from execution.enums import ArtifactType
 from execution.models.artifact import Artifact
+from execution.models.browser_context_options import BrowserContextOptions
+from execution.models.browser_session import BrowserSession
 from execution.utils.artifact_path_builder import ArtifactPathBuilder
 
 
@@ -53,51 +53,54 @@ class VideoCollector:
             artifacts_root=artifacts_root,
         )
 
-    def context_options(
+    def build_context_options(
         self,
         run_id: str,
-    ) -> dict:
+    ) -> BrowserContextOptions:
         """
-        Build BrowserContext options required for
-        Playwright video recording.
+        Build BrowserContext options for video recording.
         """
 
         video_directory = self.path_builder.video_directory(
-            run_id
+            run_id,
         )
 
-        return {
-            "record_video_dir": str(video_directory),
-        }
+        return BrowserContextOptions(
+            record_video=True,
+            video_directory=video_directory,
+        )
 
     def collect(
         self,
-        page,
-        run_id: str,
+        session: BrowserSession,
     ) -> Artifact:
         """
-        Retrieve recorded Playwright video.
+        Collect the recorded Playwright video.
         """
 
-        page.context.close()
-
-        video = page.video
-
-        if video is None:
+        if session.page.video is None:
             raise RuntimeError(
                 "No Playwright video was recorded."
             )
 
-        video_path = Path(video.path())
+        video_path = Path(
+            session.page.video.path()
+        )
 
         if not video_path.exists():
             raise FileNotFoundError(
                 f"Video not found: {video_path}"
             )
 
-        return Artifact(
+        artifact = Artifact(
             name=video_path.name,
             path=video_path,
             artifact_type=ArtifactType.VIDEO,
             size_bytes=video_path.stat().st_size,
         )
+
+        session.add_artifact(
+            artifact
+        )
+
+        return artifact
