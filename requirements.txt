@@ -1,3 +1,11 @@
 
 pydantic
 playwright
+pydantic-ai
+python-dotenv
+langgraph
+langchain-core
+pytest-playwright
+llama-index-core
+llama-index-vector-stores-qdrant
+qdrant-client

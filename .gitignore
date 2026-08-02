@@ -218,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Ignore runtime data & nested folder
+backend/qdrant_data/
+Agentic-AI-Platform-for-Intelligent-Test-Automation/
+
