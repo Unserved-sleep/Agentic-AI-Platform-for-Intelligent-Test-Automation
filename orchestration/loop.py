@@ -43,6 +43,8 @@ class GraphState(TypedDict):
     is_script_repairable: bool
     # NEW: Store execution result for artifact access
     execution_result: Optional[dict]
+    # Optional limit: stop after this many scenarios (None = run all)
+    max_scenarios: Optional[int]
 
 MAX_RETRIES = 2
 
@@ -252,7 +254,14 @@ def router_after_observe(state: GraphState):
     scenario = state.get("scenario")
     if not scenario:
         return "end_process"
-        
+
+    # Check max_scenarios limit: if we've processed enough, stop now
+    max_scenarios = state.get("max_scenarios")
+    current_idx = state.get("current_scenario_idx", 0)
+    if max_scenarios is not None and (current_idx + 1) >= max_scenarios:
+        print(f"[max_scenarios={max_scenarios}] Reached limit. Stopping after scenario #{current_idx + 1}.")
+        return "end_process"
+
     if state.get("passed"):
         return "next_scenario"
     else:
@@ -260,6 +269,12 @@ def router_after_observe(state: GraphState):
 
 def router_after_planner(state: GraphState):
     if state.get("scenario") is None:
+        return "end_process"
+    # Check max_scenarios: if we have already completed the allowed number, stop.
+    max_scenarios = state.get("max_scenarios")
+    current_idx = state.get("current_scenario_idx", 0)
+    if max_scenarios is not None and current_idx >= max_scenarios:
+        print(f"[max_scenarios={max_scenarios}] All {max_scenarios} scenario(s) processed. Done.")
         return "end_process"
     return "generate"
 

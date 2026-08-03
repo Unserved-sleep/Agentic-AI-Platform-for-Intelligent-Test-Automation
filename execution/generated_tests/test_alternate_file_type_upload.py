@@ -1,32 +1,33 @@
 import pytest
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import APIRequestContext
 from database.assertions import db_asserter
-from your_app import db_session  # assuming db_session is a fixture or can be instantiated
 
 @pytest.fixture
-def request_context():
-    with sync_playwright() as p:
-        yield p.request
+def db_session():
+    # Implement database session setup and teardown logic here
+    # For example:
+    # from sqlalchemy.orm import sessionmaker
+    # from sqlalchemy import create_engine
+    # engine = create_engine('postgresql://user:password@host:port/dbname')
+    # Session = sessionmaker(bind=engine)
+    # session = Session()
+    # try:
+    #     yield session
+    # finally:
+    #     session.close()
+    pass
 
-@pytest.mark.api_backend
-def test_alternate_file_type_upload(request_context, db_session):
-    # Define file types and corresponding files
-    file_types = {
-        "PDF": "example.pdf",
-        "DOCX": "example.docx",
-        "JPEG": "example.jpeg"
-    }
+def test_alternate_file_type_upload(db_session: Session, request: APIRequestContext):
+    file_types = [
+        {"name": "example.pdf", "mime_type": "application/pdf", "path": "./example.pdf"},
+        {"name": "example.docx", "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "path": "./example.docx"},
+        {"name": "example.jpeg", "mime_type": "image/jpeg", "path": "./example.jpeg"},
+    ]
 
-    # Send POST request to /api/documents for each file type
-    for file_type, filename in file_types.items():
-        with request_context.post("/api/documents", files={"file": (filename, open(filename, "rb"), f"application/{file_type.lower()}")}) as response:
-            # Verify request returns a 201 Created status code
+    for file_type in file_types:
+        with open(file_type["path"], "rb") as file:
+            response = request.post("/api/documents",
+                headers={"Content-Type": "multipart/form-data"},
+                data={"file": (file_type["name"], file, file_type["mime_type"])})
             assert response.status == 201
-
-            # Check database for newly created Document record
-            assert db_asserter.verify_document_ingested(db_session, filename)
-
-def test_alternate_file_type_upload_db_cleanup(db_session):
-    # Cleanup database after test
-    db_session.query(Document).delete()
-    db_session.commit()
+            assert db_asserter.verify_document_ingested(db_session, file_type["name"])

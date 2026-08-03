@@ -40,7 +40,8 @@ def main():
             "feedback": "",
             "retries": 0,
             "is_script_repairable": True,
-            "execution_result": None  # NEW: Store execution result for artifact access
+            "execution_result": None,  # NEW: Store execution result for artifact access
+            "max_scenarios": None,     # None = run all scenarios
         }
         
         print("Invoking graph...")

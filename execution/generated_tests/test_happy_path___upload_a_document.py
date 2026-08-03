@@ -15,8 +15,10 @@ def db_session():
     yield db
     db.close()
 
-def test_ts_001(api_request_context: APIRequestContext, db_session):
-    with open('example.pdf', 'rb') as file:
+def test_TS_001_upload_document(api_request_context: APIRequestContext, db_session):
+    file_path = 'path/to/valid/example.pdf'  # replace with the actual path to a valid PDF file
+    with open(file_path, 'rb') as file:
         response = api_request_context.post('/api/documents', data={'file': file})
     assert response.status == 201
-    db_asserter.verify_document_ingested(db_session, 'example.pdf')
+    filename = file_path.split('/')[-1]
+    db_asserter.verify_document_ingested(db_session, filename)

@@ -9,3 +9,6 @@ pytest-playwright
 llama-index-core
 llama-index-vector-stores-qdrant
 qdrant-client
+fastapi
+sqlalchemy
+pydantic-settings
