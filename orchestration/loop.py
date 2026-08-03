@@ -21,6 +21,14 @@ from execution.adapters.script_adapter import create_test_callable
 from execution.adapters.execution_request_builder import build_execution_request
 from execution.adapters.result_adapter import ResultAdapter
 
+# Report generation — writes to artifacts/reports/ after every execution
+from reports.report_agent import ReportAgent
+import logging
+_logger = logging.getLogger(__name__)
+
+# Single shared instance; output_dir defaults to artifacts/reports/
+_report_agent = ReportAgent()
+
 # Initialize common dependencies for all agents in the loop
 global_deps = AgentDeps(rag_retriever=rag_retriever)
 
@@ -139,8 +147,31 @@ def execute_node(state: GraphState):
             request=request,
             test_function=test_function,
         )
-        
-        # Step 4: Adapt result for Failure Analysis
+
+        # Step 4: Generate reports (HTML + JSON + Markdown).
+        # Wrapped in try/except — a report failure must NEVER fail the test run.
+        try:
+            title = scenario.title if scenario else "Execution Report"
+            report_output = _report_agent.generate(
+                result,
+                formats=["html", "json", "markdown"],
+                title=title,
+            )
+            print(
+                f"  Reports written:"
+                f"\n    JSON:     {report_output.json_path}"
+                f"\n    HTML:     {report_output.html_path}"
+                f"\n    Markdown: {report_output.markdown_path}"
+            )
+        except Exception as _report_exc:  # noqa: BLE001
+            _logger.exception(
+                "Report generation failed for run_id=%s (execution result unaffected): %s",
+                result.run_id,
+                _report_exc,
+            )
+            print(f"  [WARNING] Report generation failed: {_report_exc}")
+
+        # Step 5: Adapt result for Failure Analysis
         stdout, stderr = ResultAdapter.to_stdout_stderr(result)
         passed = ResultAdapter.is_passed(result)
         

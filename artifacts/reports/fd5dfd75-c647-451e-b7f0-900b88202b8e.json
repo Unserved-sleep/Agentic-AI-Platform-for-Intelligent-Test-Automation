@@ -1,0 +1,33 @@
+{
+  "run_id": "fd5dfd75-c647-451e-b7f0-900b88202b8e",
+  "status": "PASSED",
+  "title": "Pipeline Smoke Test",
+  "generated_at": "2026-08-03T11:01:00.804320",
+  "metadata": {},
+  "sections": [
+    {
+      "title": "Summary",
+      "section_type": "summary",
+      "data": {
+        "run_id": "fd5dfd75-c647-451e-b7f0-900b88202b8e",
+        "status": "PASSED",
+        "started_at": "2026-08-03T11:00:59.618708",
+        "completed_at": "2026-08-03T11:01:00.780698",
+        "duration_seconds": 1.16199,
+        "environment": "",
+        "tags": [],
+        "browser_type": ""
+      }
+    },
+    {
+      "title": "Artifacts",
+      "section_type": "artifacts",
+      "data": {
+        "screenshots": [],
+        "traces": [],
+        "videos": [],
+        "logs": []
+      }
+    }
+  ]
+}

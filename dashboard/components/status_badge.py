@@ -8,8 +8,6 @@ Renders a coloured inline HTML badge for an execution status string.
 
 from __future__ import annotations
 
-import streamlit as st
-
 # Colour mapping: status → (background_hex, text_hex)
 _STATUS_COLOURS: dict[str, tuple[str, str]] = {
     "PASSED": ("#22c55e", "#ffffff"),
@@ -77,4 +75,5 @@ def render_status_badge(status: str) -> None:
     status:
         Status string.
     """
+    import streamlit as st  # noqa: PLC0415 — lazy import keeps tests streamlit-free
     st.markdown(status_badge_html(status), unsafe_allow_html=True)

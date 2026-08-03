@@ -17,11 +17,25 @@ Pages
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Streamlit path shim
+# When Streamlit executes `streamlit run dashboard/app.py` it adds the
+# *script's directory* (dashboard/) to sys.path — not the project root.
+# We need the project root on sys.path so that the dashboard package itself
+# and any sibling packages are importable.  This shim inserts the project
+# root (parent of this file's directory) before any other imports.
+# ---------------------------------------------------------------------------
+_PROJ_ROOT = Path(__file__).parent.parent.resolve()
+if str(_PROJ_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJ_ROOT))
 
 import streamlit as st
 
-# Import page render functions
+# Import page render functions (relative imports — work both under Streamlit
+# and under pytest/python -m)
 from dashboard.pages.analytics import render as render_analytics
 from dashboard.pages.artifact_viewer import render as render_artifacts
 from dashboard.pages.execution_history import render as render_history
