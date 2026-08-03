@@ -86,6 +86,7 @@ from execution.browser_agent.browser_backend import (
     BackendSession,
     BrowserBackend,
 )
+from execution.browser_agent.inspection_summary import InspectionSummaryBuilder
 from execution.browser_agent.page_context import PageContext, PageSnapshot
 
 
@@ -410,6 +411,96 @@ class BrowserExecutionAgent:
             stack_trace=stack_trace_str,
             metadata=metadata or {},
         )
+
+    def inspect(
+            self,
+            url: str,
+            run_id: Optional[str] = None,
+            navigate_timeout_ms: int = 30_000,
+            wait_until: str = "networkidle",
+    ) -> PageSnapshot:
+        """
+        Open a browser session, navigate to the given URL,
+        capture the current page state, and return a PageSnapshot.
+
+        Unlike execute(), no browser actions are performed.
+        This method is intended for browser inspection and
+        prompt enrichment for AI agents.
+
+        Parameters
+        ----------
+        url:
+            URL to inspect.
+
+        run_id:
+            Optional inspection identifier. One is generated if omitted.
+
+        navigate_timeout_ms:
+            Navigation timeout in milliseconds.
+
+        wait_until:
+            Playwright navigation wait strategy.
+
+        Returns
+        -------
+        PageSnapshot
+            Snapshot of the browser state, DOM, screenshot,
+            console logs and network events.
+
+        Raises
+        ------
+        RuntimeError
+            If inspection fails.
+        """
+
+        owns_backend = False
+        session: Optional[BackendSession] = None
+
+        effective_run_id = run_id or f"inspection-{uuid.uuid4()}"
+
+        try:
+            # Start backend only if not already running
+            if not self._backend.is_running:
+                self.start()
+                owns_backend = True
+
+            # Open isolated browser session
+            session = self._backend.open_session(
+                run_id=effective_run_id,
+                url=url,
+                navigate_timeout_ms=navigate_timeout_ms,
+                wait_until=wait_until,
+            )
+
+            # Capture page state
+            snapshot = session.page_context.capture()
+
+            return snapshot
+
+        finally:
+            # Always close browser session
+            if session is not None:
+                try:
+                    self._backend.close_session(
+                        session=session,
+                        trace_output_path=self._trace_output_path,
+                    )
+                except Exception:
+                    pass
+
+            # Stop backend only if we started it
+            if owns_backend:
+                try:
+                    self.stop()
+                except Exception:
+                    pass
+
+    def inspect_summary(
+            self,
+            url: str,
+    ):
+        snapshot = self.inspect(url)
+        return InspectionSummaryBuilder.from_snapshot(snapshot)
 
     # ------------------------------------------------------------------
     # Context-manager protocol
