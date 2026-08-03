@@ -7,6 +7,10 @@ from agents.scenario_agent import generate_test_scenarios
 from agents.playwright_agent import generate_playwright_script
 
 def main():
+    app_url = input("Enter application URL (default: http://127.0.0.1:8000): ").strip()
+    if app_url:
+        os.environ["APPLICATION_URL"] = app_url
+
     # Example User Story / API documentation
     sample_requirement = """
     User Story: Document Upload API

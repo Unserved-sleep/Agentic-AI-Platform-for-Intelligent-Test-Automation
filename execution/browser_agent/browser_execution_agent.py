@@ -499,8 +499,9 @@ class BrowserExecutionAgent:
     def inspect_summary(
             self,
             url: str,
+            run_id: Optional[str] = None,
     ):
-        snapshot = self.inspect(url)
+        snapshot = self.inspect(url=url, run_id=run_id)
         return InspectionSummaryBuilder.from_snapshot(snapshot)
 
     # ------------------------------------------------------------------
@@ -533,6 +534,26 @@ class BrowserExecutionAgent:
         """The configured browser engine name."""
         return self._backend.browser_type
 
+    def build_generation_prompt(
+        self,
+        url: str,
+        requirement: str,
+        run_id: str | None = None,
+    ) -> str:
+        """
+        Inspect a page and generate an LLM-ready prompt.
+        """
+
+        summary = self.inspect_summary(
+            url=url,
+            run_id=run_id,
+        )
+
+        return PromptBuilder.build(
+            requirement=requirement,
+            inspection=summary,
+        )
+
 
 # ---------------------------------------------------------------------------
 # Private helper
@@ -561,22 +582,4 @@ def _empty_snapshot(run_id: str) -> PageSnapshot:
     )
 
 
-def build_generation_prompt(
-    self,
-    url: str,
-    requirement: str,
-    run_id: str | None = None,
-) -> str:
-    """
-    Inspect a page and generate an LLM-ready prompt.
-    """
 
-    summary = self.inspect_summary(
-        url=url,
-        run_id=run_id,
-    )
-
-    return PromptBuilder.build(
-        requirement=requirement,
-        inspection=summary,
-    )

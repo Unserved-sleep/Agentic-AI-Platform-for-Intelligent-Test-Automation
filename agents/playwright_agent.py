@@ -161,6 +161,13 @@ def add_db_context(ctx: RunContext[AgentDeps]) -> str:
         "-------------------------------------\n"
     )
 
+_cached_url = None
+def get_application_url():
+    global _cached_url
+    if _cached_url is None:
+        _cached_url = os.getenv("APPLICATION_URL", "http://127.0.0.1:8000")
+    return _cached_url
+
 def generate_playwright_script(scenario: TestScenario, deps: AgentDeps, model: str = None) -> PlaywrightScript:
     """
     Generate a Playwright Python script from a TestScenario.
@@ -176,10 +183,30 @@ def generate_playwright_script(scenario: TestScenario, deps: AgentDeps, model: s
     if model:
         kwargs['model'] = model
         
-    prompt = f"Please generate a Playwright script for the following scenario:\n\n{scenario.model_dump_json(indent=2)}"
-    
-    result = playwright_agent.run_sync(prompt, deps=deps, **kwargs)
-    
+    from execution.browser_agent.browser_execution_agent import BrowserExecutionAgent
+
+    browser = BrowserExecutionAgent()
+    application_url = get_application_url()
+
+    prompt = browser.build_generation_prompt(
+        url=application_url,
+        requirement=scenario.model_dump_json(indent=2),
+    )
+
+    import time
+    for attempt in range(5):
+        try:
+            result = playwright_agent.run_sync(prompt, deps=deps, **kwargs)
+            break
+        except Exception as e:
+            if "rate_limit_exceeded" in str(e) or "429" in str(e):
+                if attempt == 4:
+                    raise
+                print(f"Rate limit hit in playwright_agent, retrying in 10s... (Attempt {attempt+1}/5)")
+                time.sleep(10)
+            else:
+                raise
+
     # Strip markdown if the LLM still included it
     code_text = result.output
     code_text = code_text.strip()

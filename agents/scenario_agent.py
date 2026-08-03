@@ -87,9 +87,22 @@ def generate_test_scenarios(requirement_text: str, deps: AgentDeps, model: str =
     kwargs = {}
     if model:
         kwargs['model'] = model
+
+    from execution.browser_agent.browser_execution_agent import BrowserExecutionAgent
+    from execution.browser_agent.scenario_prompt_builder import ScenarioPromptBuilder
+
+    browser = BrowserExecutionAgent()
+    application_url = os.environ.get("APPLICATION_URL", "http://127.0.0.1:8000")
+
+    summary = browser.inspect_summary(url=application_url)
+
+    prompt = ScenarioPromptBuilder.build(
+        requirement=requirement_text,
+        inspection=summary,
+    )
         
     result = scenario_agent.run_sync(
-        f"Generate test scenarios based on the following requirement:\n\n{requirement_text}",
+        prompt,
         deps=deps,
         **kwargs
     )
