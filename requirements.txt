@@ -13,3 +13,6 @@ fastapi
 sqlalchemy
 pydantic-settings
 pydantic-ai-slim[groq]
+psycopg2-binary
+streamlit
+beautifulsoup4
