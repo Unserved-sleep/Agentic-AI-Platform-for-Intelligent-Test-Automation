@@ -88,6 +88,7 @@ from execution.browser_agent.browser_backend import (
 )
 from execution.browser_agent.inspection_summary import InspectionSummaryBuilder
 from execution.browser_agent.page_context import PageContext, PageSnapshot
+from execution.browser_agent.prompt_builder import PromptBuilder
 
 
 # ---------------------------------------------------------------------------
@@ -557,4 +558,25 @@ def _empty_snapshot(run_id: str) -> PageSnapshot:
         screenshot_png=None,
         console_logs=[],
         network_events=NetworkEventBundle(),
+    )
+
+
+def build_generation_prompt(
+    self,
+    url: str,
+    requirement: str,
+    run_id: str | None = None,
+) -> str:
+    """
+    Inspect a page and generate an LLM-ready prompt.
+    """
+
+    summary = self.inspect_summary(
+        url=url,
+        run_id=run_id,
+    )
+
+    return PromptBuilder.build(
+        requirement=requirement,
+        inspection=summary,
     )
