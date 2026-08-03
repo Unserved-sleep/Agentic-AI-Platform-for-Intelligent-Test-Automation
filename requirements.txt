@@ -12,3 +12,4 @@ qdrant-client
 fastapi
 sqlalchemy
 pydantic-settings
+pydantic-ai-slim[groq]
