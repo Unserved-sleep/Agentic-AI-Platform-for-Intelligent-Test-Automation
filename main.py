@@ -39,7 +39,8 @@ def main():
             "passed": False,
             "feedback": "",
             "retries": 0,
-            "is_script_repairable": True
+            "is_script_repairable": True,
+            "execution_result": None  # NEW: Store execution result for artifact access
         }
         
         print("Invoking graph...")

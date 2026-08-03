@@ -1,5 +1,4 @@
 import os
-import subprocess
 from typing import Optional, List
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
@@ -16,8 +15,18 @@ from agents.failure_analysis_agent import analyze_failure, FailureDiagnosis
 from shared.deps import AgentDeps
 from rag.retriever import rag_retriever
 
+# Import Engineer 3 Execution Framework
+from execution.services.execution_service import ExecutionService
+from execution.adapters.script_adapter import create_test_callable
+from execution.adapters.execution_request_builder import build_execution_request
+from execution.adapters.result_adapter import ResultAdapter
+
 # Initialize common dependencies for all agents in the loop
 global_deps = AgentDeps(rag_retriever=rag_retriever)
+
+# Initialize ExecutionService (Engineer 3)
+execution_service = ExecutionService()
+
 
 class GraphState(TypedDict):
     requirement: str
@@ -32,6 +41,8 @@ class GraphState(TypedDict):
     feedback: str
     retries: int
     is_script_repairable: bool
+    # NEW: Store execution result for artifact access
+    execution_result: Optional[dict]
 
 MAX_RETRIES = 2
 
@@ -86,43 +97,94 @@ def generate_node(state: GraphState):
     return {"script": script_result}
 
 def execute_node(state: GraphState):
+    """
+    Execute the generated Playwright script using Engineer 3's ExecutionService.
+    
+    This node:
+    1. Converts PlaywrightScript to a callable via ScriptAdapter
+    2. Builds ExecutionRequest via ExecutionRequestBuilder
+    3. Executes via ExecutionService
+    4. Returns ExecutionResult adapted for Failure Analysis
+    """
     print("\n--- [NODE: EXECUTE] ---")
     script = state.get("script")
+    scenario = state.get("scenario")
     
     if not script:
-        return {"passed": True} # Skip if no script
-        
-    output_dir = os.path.join(os.path.dirname(__file__), '..', 'execution', 'generated_tests')
-    os.makedirs(output_dir, exist_ok=True)
-    
-    script_path = os.path.join(output_dir, script.file_name)
-    print(f"Saving script to {script_path}")
-    with open(script_path, "w") as f:
-        f.write(script.code)
-        
-    print(f"Executing: pytest {script_path}")
-    cmd = ["pytest", script_path, "-v"]
+        return {"passed": True}  # Skip if no script
     
     try:
-        # Run the test
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-        stdout = result.stdout
-        stderr = result.stderr
-        exit_code = result.returncode
-    except subprocess.TimeoutExpired as e:
-        stdout = e.stdout.decode() if e.stdout else ""
-        stderr = e.stderr.decode() if e.stderr else "Timeout Expired"
-        exit_code = 124
-    
-    passed = (exit_code == 0)
-    print(f"Execution finished. Passed: {passed}")
-    
-    return {
-        "execution_stdout": stdout,
-        "execution_stderr": stderr,
-        "execution_exit_code": exit_code,
-        "passed": passed
-    }
+        # Step 1: Convert script to callable
+        print(f"Converting script to callable: {script.file_name}")
+        test_function = create_test_callable(
+            script=script,
+            script_dir="execution/generated_tests"
+        )
+        
+        # Step 2: Build ExecutionRequest
+        print("Building ExecutionRequest...")
+        request = build_execution_request(
+            script=script,
+            scenario=scenario,
+            headless=True,  # Run headless for CI/automation
+        )
+        print(f"Run ID: {request.run_id}")
+        print(f"Execution Type: {request.execution_type.value}")
+        
+        # Step 3: Execute via ExecutionService
+        print("Executing via ExecutionService...")
+        result = execution_service.execute(
+            request=request,
+            test_function=test_function,
+        )
+        
+        # Step 4: Adapt result for Failure Analysis
+        stdout, stderr = ResultAdapter.to_stdout_stderr(result)
+        passed = ResultAdapter.is_passed(result)
+        
+        print(f"Execution finished. Status: {result.status.value}")
+        
+        # Log artifact information
+        if result.artifacts:
+            if result.artifacts.screenshots:
+                print(f"  Screenshots captured: {len(result.artifacts.screenshots)}")
+            if result.artifacts.traces:
+                print(f"  Traces captured: {len(result.artifacts.traces)}")
+            if result.artifacts.videos:
+                print(f"  Videos captured: {len(result.artifacts.videos)}")
+            if result.artifacts.logs:
+                print(f"  Logs captured: {len(result.artifacts.logs)}")
+        
+        return {
+            "execution_stdout": stdout,
+            "execution_stderr": stderr,
+            "execution_exit_code": 0 if passed else 1,
+            "passed": passed,
+            "execution_result": {
+                "run_id": result.run_id,
+                "status": result.status.value,
+                "error_message": result.error_message,
+                "stack_trace": result.stack_trace,
+                "screenshot_paths": ResultAdapter.get_screenshot_paths(result),
+                "trace_paths": ResultAdapter.get_trace_paths(result),
+            }
+        }
+        
+    except Exception as e:
+        # Handle execution errors
+        import traceback
+        error_msg = str(e)
+        stack_trace_str = traceback.format_exc()
+        
+        print(f"Execution failed with error: {error_msg}")
+        
+        return {
+            "execution_stdout": "",
+            "execution_stderr": f"{error_msg}\n\n{stack_trace_str}",
+            "execution_exit_code": 1,
+            "passed": False,
+            "execution_result": None
+        }
 
 def observe_node(state: GraphState):
     print("\n--- [NODE: OBSERVE] ---")

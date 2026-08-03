@@ -1,33 +1,29 @@
 import pytest
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import Page
 from database.assertions import db_asserter
-from sqlalchemy.orm import sessionmaker
-from .models import Document, engine
+from typing import Generator
 
+# Define a fixture for the database session
 @pytest.fixture
 def db_session():
+    # Replace this with your actual database session setup code
+    # For this example, we'll assume a simple in-memory database
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    engine = create_engine('sqlite:///:memory:')
     Session = sessionmaker(bind=engine)
-    session = Session()
-    yield session
-    session.close()
+    return Session()
 
-@pytest.fixture
-def request_context():
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        context = browser.new_context()
-        yield context
-        context.close()
-        browser.close()
+def test_successful_document_upload(page: Page, db_session: Generator):
+    # Define a valid file
+    file_path = "path/to/valid/file.txt"
+    filename = "file.txt"
 
-def test_upload_document(request_context, db_session):
-    document = {"filename": "example.txt", "content": "Hello World"}
-    with open("example.txt", "w") as f:
-        f.write(document["content"])
+    # Send a POST request to /api/documents with a valid file attached
+    with page.request.post("http://localhost:8000/api/documents", 
+                            files={"file": file_path}) as response:
+        # Verify the request returns a 201 Created status code
+        assert response.status == 201
 
-    with request_context as context:
-        with context.expect_request(lambda request: request.method == "POST" and request.url == "/api/documents") as request_info:
-            response = context.fetch("POST", "/api/documents", {"headers": {"Content-Type": "multipart/form-data"}, "data": {"document": open("example.txt", "rb")}})
-
-    assert response.status == 201
-    assert db_asserter.verify_document_ingested(db_session, document["filename"])
+    # Check the database for a newly created Document record with the correct filename
+    assert db_asserter.verify_document_ingested(db_session, filename)
