@@ -1,3 +1,8 @@
+"""
+System Prompts: LLM instruction templates for all AI agents.
+Defines prompts for RequirementAgent, TestScenarioAgent, ScriptAgent,
+FailureAnalysisAgent, and SelfHealingAgent to ensure consistent LLM behavior.
+"""
 # Prompts for Platform AI Agents
 
 REQUIREMENT_AGENT_PROMPT = """You are an expert QA Requirement & Domain Analysis Agent.

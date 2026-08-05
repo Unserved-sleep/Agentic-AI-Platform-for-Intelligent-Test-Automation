@@ -1,3 +1,8 @@
+"""
+Configuration Settings: Centralized environment-backed settings for the platform.
+Loads database, LLM API, Qdrant, and Playwright configuration from .env file
+and provides Path objects for all system directories.
+"""
 import os
 from pathlib import Path
 from dotenv import load_dotenv

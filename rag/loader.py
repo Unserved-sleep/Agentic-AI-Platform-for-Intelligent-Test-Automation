@@ -1,3 +1,8 @@
+"""
+Text Chunker: Splits documents into overlapping chunks for RAG embedding.
+Used by the RAG pipeline to break large documents into manageable segments
+before generating vector embeddings for Qdrant storage.
+"""
 from typing import List
 
 class TextChunker:
