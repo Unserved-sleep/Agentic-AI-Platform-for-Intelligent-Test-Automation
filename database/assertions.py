@@ -1,3 +1,8 @@
+"""
+Database Assertion Helper: Read-only PostgreSQL assertions for API test validation.
+Enables tests to verify claim status transitions, payout creation, and other
+backend state changes directly against the database.
+"""
 from typing import Dict, Any, Optional, List
 from database.connection import SessionLocal
 from database.models import Claim, Payout

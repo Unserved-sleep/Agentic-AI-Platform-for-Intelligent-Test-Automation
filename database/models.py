@@ -1,3 +1,8 @@
+"""
+SQLAlchemy ORM Models: Database schema for the test automation platform.
+Defines Claim, Payout, Document, Scenario, Script, Execution, and HealingLog tables
+for PostgreSQL persistence of all platform entities.
+"""
 from sqlalchemy import Column, Integer, String, Float, Text, DateTime, ForeignKey, Boolean, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime

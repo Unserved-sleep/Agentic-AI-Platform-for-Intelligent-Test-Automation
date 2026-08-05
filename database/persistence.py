@@ -1,3 +1,8 @@
+"""
+Database Persistence Helper: CRUD operations for all platform entities.
+Saves and retrieves documents, test scenarios, generated scripts, execution records,
+and healing logs from PostgreSQL for full audit trail and analytics.
+"""
 from typing import List, Optional, Dict, Any
 from database.connection import SessionLocal
 from database.models import DocumentModel, ScenarioModel, ScriptModel, ExecutionModel, HealingLogModel

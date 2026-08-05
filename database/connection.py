@@ -1,3 +1,8 @@
+"""
+Database Connection: SQLAlchemy engine, session factory, and database initialization.
+Provides connection pooling, automatic schema creation, and seed data for the
+agentic_test_db PostgreSQL database.
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from configs.config import DATABASE_URL, DEFAULT_DB_URL
