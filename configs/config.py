@@ -11,14 +11,34 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 # Database configuration
-POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "Sandy168$")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
-POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
-POSTGRES_DB = os.getenv("POSTGRES_DB", "agentic_test_db")
+#POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
+#POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "Sandy168$")
+#POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
+#POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
+#POSTGRES_DB = os.getenv("POSTGRES_DB", "agentic_test_db")
 
-DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
-DEFAULT_DB_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/postgres"
+#DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+#DEFAULT_DB_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/postgres"
+
+# Database configuration (Railway compatible)
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+POSTGRES_USER = os.getenv("PGUSER", "postgres")
+POSTGRES_PASSWORD = os.getenv("PGPASSWORD", "")
+POSTGRES_HOST = os.getenv("PGHOST", "localhost")
+POSTGRES_PORT = os.getenv("PGPORT", "5432")
+POSTGRES_DB = os.getenv("PGDATABASE", "agentic_test_db")
+
+if not DATABASE_URL:
+    DATABASE_URL = (
+        f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
+        f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    )
+
+DEFAULT_DB_URL = (
+    f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
+    f"@{POSTGRES_HOST}:{POSTGRES_PORT}/postgres"
+)
 
 # Vector Store / Qdrant settings
 QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
