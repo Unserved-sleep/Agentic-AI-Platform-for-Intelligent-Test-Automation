@@ -1,3 +1,8 @@
+"""
+Structured Logger: Centralized logging configuration for the platform.
+Provides consistent log formatting with timestamps and module names
+for all agents, services, and execution components.
+"""
 import logging
 import sys
 from pathlib import Path

@@ -1,3 +1,8 @@
+"""
+Execution Runner: Top-level Playwright test runner for UI and API scripts.
+Executes pytest tests, captures screenshots/traces/videos, runs DB assertions,
+and persists execution records to PostgreSQL for analytics and self-healing.
+"""
 import os
 import sys
 import uuid

@@ -1,3 +1,8 @@
+"""
+Shared Pydantic Schemas: Data models used across all platform modules.
+Defines ParsedRequirement, TestScenario, GeneratedTestScript, ExecutionResult,
+SelfHealingResult, and QAReport for consistent data flow between agents.
+"""
 from typing import List, Optional, Dict, Any, Union
 from pydantic import BaseModel, Field
 from datetime import datetime

@@ -1,3 +1,8 @@
+"""
+Report Generator: Produces HTML and JSON execution reports for QA analytics.
+Generates styled HTML reports with pass/fail metrics, UI vs API breakdown,
+and execution history from the QAReport data model.
+"""
 import json
 from pathlib import Path
 from shared.schemas import QAReport
