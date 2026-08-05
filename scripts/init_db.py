@@ -1,3 +1,17 @@
+"""
+Database initialization script for the Agentic AI Test Automation Platform.
+
+This script performs the following tasks:
+1. Ensures the PostgreSQL database 'agentic_test_db' exists
+2. Creates all database tables using SQLAlchemy models
+3. Seeds initial sample insurance claims and payout data for testing
+
+Run this script once after setting up the environment:
+    python scripts/init_db.py
+
+The script is idempotent - it will skip seeding if data already exists.
+"""
+
 import sys
 from pathlib import Path
 
@@ -11,6 +25,20 @@ from shared.logger import get_logger
 logger = get_logger("scripts.init_db")
 
 def initialize_database():
+    """
+    Initialize the database with schema and sample data.
+    
+    This function performs a complete database setup:
+    1. Creates the 'agentic_test_db' database if it doesn't exist
+    2. Creates all tables defined in SQLAlchemy models
+    3. Seeds sample insurance claims data for the demo domain
+    
+    The function is safe to run multiple times - it checks for existing
+    data before seeding to avoid duplicates.
+    
+    Raises:
+        Exception: If database connection or seeding fails
+    """
     logger.info("Step 1: Ensuring PostgreSQL database 'agentic_test_db' exists and schemas are updated...")
     ensure_database_exists()
     

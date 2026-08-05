@@ -1,3 +1,24 @@
+"""
+Streamlit Dashboard Application for the Agentic AI Test Automation Platform.
+
+This is the main entry point for the interactive web UI that provides:
+- Dashboard overview with system status and live metrics
+- Document ingestion and RAG pipeline management
+- AI-powered test scenario generation
+- Playwright script studio with code preview
+- Test execution with artifact collection (screenshots, videos, traces)
+- Self-healing engine trigger and repair visualization
+- Analytics and reporting with PostgreSQL database inspector
+
+Run the dashboard with:
+    streamlit run dashboard/app.py
+
+The dashboard connects to:
+- FastAPI backend (http://localhost:8000)
+- PostgreSQL database (agentic_test_db)
+- Qdrant vector store for RAG queries
+"""
+
 import streamlit as st
 import requests
 import json

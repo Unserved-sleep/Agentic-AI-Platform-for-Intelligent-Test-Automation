@@ -1,3 +1,20 @@
+"""
+Integration and unit tests for the Agentic AI Test Automation Platform.
+
+This module contains comprehensive tests that verify:
+- Database connectivity and DBAssertionHelper queries
+- Document parsing and RAG pipeline functionality
+- Agent workflows (RequirementAgent, TestScenarioAgent, PlaywrightScriptAgent)
+- Playwright execution with artifact generation (screenshots, traces, videos)
+- LangGraph orchestration end-to-end workflow
+
+Run tests with:
+    pytest tests/ -v
+    
+For coverage:
+    pytest tests/ --cov=. --cov-report=html
+"""
+
 import os
 import pytest
 from pathlib import Path
