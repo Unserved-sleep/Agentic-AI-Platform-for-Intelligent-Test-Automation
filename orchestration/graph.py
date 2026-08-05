@@ -1,3 +1,8 @@
+"""
+LangGraph Orchestration: 5-node state graph for the agent execution loop.
+Coordinates Planner -> Generate -> Execute -> Observe -> Repair workflow
+with bounded retry logic for self-healing broken test scripts.
+"""
 from typing import Dict, Any, List, TypedDict
 from langgraph.graph import StateGraph, END
 from agents.requirement_agent import RequirementAgent

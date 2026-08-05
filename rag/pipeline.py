@@ -1,3 +1,8 @@
+"""
+RAG Pipeline: Qdrant vector database integration for requirement context storage and retrieval.
+Chunks documents, generates embeddings via FastEmbed, and enables semantic search over BRDs
+and policy documents to provide context for AI agents.
+"""
 from typing import List, Dict, Any
 import numpy as np
 from qdrant_client import QdrantClient

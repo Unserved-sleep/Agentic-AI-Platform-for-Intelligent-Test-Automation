@@ -1,3 +1,8 @@
+"""
+Document Parser: Multi-format ingestion for PDF, DOCX, TXT, and Markdown requirement documents.
+Extracts raw text, identifies actors, workflows, validation rules, and API endpoints
+to build structured ParsedRequirement objects for downstream AI agents.
+"""
 import os
 import re
 from pathlib import Path
