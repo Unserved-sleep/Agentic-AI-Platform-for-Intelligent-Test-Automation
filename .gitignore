@@ -4,8 +4,11 @@
 
 # Python & Virtual Environments
 venv/
+.venv/
+.idea/
 ENV/
 env/
+manual/
 __pycache__/
 *.pyc
 *.pyo
