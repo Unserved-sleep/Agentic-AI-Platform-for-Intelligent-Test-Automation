@@ -1,3 +1,8 @@
+"""
+Playwright Script Agent: Generates executable Playwright Python test scripts for each test scenario.
+Produces Page Object Model (POM) UI scripts targeting SauceDemo and API scripts using httpx/requests,
+with integrated DBAssertionHelper calls for PostgreSQL state validation.
+"""
 import os
 from pathlib import Path
 from typing import Dict, Any

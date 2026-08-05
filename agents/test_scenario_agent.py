@@ -1,3 +1,8 @@
+"""
+Test Scenario Agent: Generates comprehensive test scenarios from structured requirement context.
+Produces positive, negative, boundary, security, and API backend-logic test scenarios
+targeting both the SauceDemo UI and the FastAPI backend with PostgreSQL assertions.
+"""
 import json
 import uuid
 from typing import List, Dict, Any

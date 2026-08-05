@@ -1,3 +1,8 @@
+"""
+Groq LLM client wrapper for the platform.
+Provides a unified interface for calling the Groq API (Llama 3.3 70B) to generate
+text completions used by all AI agents in the platform.
+"""
 import json
 import os
 import requests

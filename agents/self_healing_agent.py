@@ -1,3 +1,8 @@
+"""
+Self-Healing Agent: Automatically repairs broken Playwright test scripts and re-executes them.
+Uses the FailureAnalysisAgent to diagnose failures, then applies LLM-generated or
+deterministic patches to fix broken locators/assertions and logs healing results to PostgreSQL.
+"""
 import os
 from pathlib import Path
 from shared.schemas import ExecutionResult, SelfHealingResult

@@ -1,3 +1,8 @@
+"""
+Failure Analysis Agent: Analyzes test execution failures and classifies their root cause.
+Inspects stdout, stderr, and traceback output to categorize failures as UI locator drift,
+API contract drift, or backend business-logic regressions.
+"""
 from typing import Dict, Any
 from shared.schemas import ExecutionResult
 from agents.llm_client import llm_client

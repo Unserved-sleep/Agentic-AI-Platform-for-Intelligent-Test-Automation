@@ -1,3 +1,8 @@
+"""
+Agents package: Exports all AI agent classes used in the test automation platform.
+Includes the LLM client, requirement, scenario, script, failure analysis,
+self-healing, and report agents.
+"""
 from agents.llm_client import llm_client
 from agents.requirement_agent import RequirementAgent
 from agents.test_scenario_agent import TestScenarioAgent

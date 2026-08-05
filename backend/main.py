@@ -1,3 +1,8 @@
+"""
+FastAPI backend application: Exposes all REST API endpoints for the test automation platform.
+Handles document ingestion, scenario and script generation, test execution, orchestration,
+reporting, and the demo Insurance Claims Portal domain endpoints (claims, payouts, approvals).
+"""
 import os
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, JSONResponse

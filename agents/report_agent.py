@@ -1,3 +1,8 @@
+"""
+Report Agent: Generates QA analytics and execution summary reports from PostgreSQL.
+Queries execution and healing log records to build pass/fail metrics, UI vs API breakdowns,
+self-healing counts, and actionable QA recommendations.
+"""
 from typing import List, Dict, Any
 from shared.schemas import QAReport, ExecutionResult
 from database.connection import SessionLocal

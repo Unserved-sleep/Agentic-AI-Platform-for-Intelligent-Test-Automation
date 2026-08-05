@@ -1,3 +1,8 @@
+"""
+Requirement Agent: Parses ingested documents into structured domain context.
+Uses Groq LLM and RAG-retrieved context to extract actors, workflows,
+validations, and API endpoints from BRDs, policy documents, and API specs.
+"""
 import json
 from typing import Dict, Any
 from shared.schemas import ParsedRequirement
