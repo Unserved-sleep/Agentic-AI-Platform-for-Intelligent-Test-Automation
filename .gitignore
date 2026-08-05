@@ -1,0 +1,26 @@
+# Environment & Secrets
+.env
+*.env
+
+# Python & Virtual Environments
+venv/
+ENV/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Embedded Git Clones
+Agentic-AI-Platform-for-Intelligent-Test-Automation/
+
+# Database & Vector DB locks/artifacts
+artifacts/qdrant_db/
+*.lock
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

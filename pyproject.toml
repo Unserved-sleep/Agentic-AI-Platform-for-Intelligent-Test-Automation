@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentic-ai-test-automation"
+version = "1.0.0"
+description = "Agentic AI Platform for Intelligent Test Automation with Playwright, Groq, PostgreSQL, and Streamlit"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "streamlit>=1.32.0",
+    "sqlalchemy>=2.0.28",
+    "psycopg2-binary>=2.9.9",
+    "pydantic>=2.6.4",
+    "groq>=0.5.0",
+    "langgraph>=0.0.26",
+    "qdrant-client>=1.8.0",
+    "playwright>=1.42.0",
+    "pytest>=8.1.1",
+    "pytest-playwright>=0.4.4"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
