@@ -110,6 +110,20 @@ menu = st.sidebar.radio(
     ]
 )
 
+st.sidebar.divider()
+st.sidebar.subheader("Demo Controls")
+
+confirm_reset = st.sidebar.checkbox(
+    "I understand this will delete all generated demo data."
+)
+
+if confirm_reset:
+    if st.sidebar.button("🗑 Reset Demo Database"):
+        DBPersistenceHelper.reset_demo_database()
+        st.session_state.clear()
+        st.success("Demo database cleared successfully!")
+        st.rerun()
+
 # Initialize Session State
 if "parsed_req" not in st.session_state:
     st.session_state.parsed_req = None

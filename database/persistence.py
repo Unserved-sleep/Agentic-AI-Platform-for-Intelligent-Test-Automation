@@ -189,3 +189,32 @@ class DBPersistenceHelper:
             ]
         finally:
             db.close()
+
+    @staticmethod
+    def reset_demo_database():
+        """
+        Clear all generated data from PostgreSQL while preserving
+        the database structure.
+        """
+        db = SessionLocal()
+        try:
+            # Delete child tables first
+            db.query(HealingLogModel).delete()
+            db.query(ExecutionModel).delete()
+            db.query(ScriptModel).delete()
+            db.query(ScenarioModel).delete()
+            db.query(DocumentModel).delete()
+
+            # Uncomment these if you also want to clear claims data
+            # db.query(Payout).delete()
+            # db.query(Claim).delete()
+
+            db.commit()
+            logger.info("Demo database reset successfully.")
+
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Database reset failed: {e}")
+
+        finally:
+            db.close()
