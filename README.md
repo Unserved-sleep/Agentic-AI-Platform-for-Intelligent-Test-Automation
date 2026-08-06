@@ -1,4 +1,4 @@
-# Agentic AI Platform for Intelligent Test Automation
+# Agentic AI Platform for Intelligent Test Automation 
 
 An enterprise-grade, multi-agent AI platform that automates the end-to-end software testing lifecycle using Playwright, Groq AI (Llama 3.3 70B), LangGraph, PostgreSQL, and Streamlit.
 
