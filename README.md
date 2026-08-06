@@ -1,377 +1,690 @@
-# Agentic AI Platform for Intelligent Test Automation
+# 🤖 Agentic AI Platform for Intelligent Test Automation
 
-An enterprise-grade, multi-agent AI platform that automates the **end-to-end software testing lifecycle** — from ingesting requirements documents to generating, executing, and self-healing Playwright test scripts — all powered by Groq AI (Llama 3.3 70B), LangGraph, and a PostgreSQL-backed analytics dashboard.
+<p align="center">
 
----
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-success)
+![Streamlit](https://img.shields.io/badge/Streamlit-Dashboard-red)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Railway-blue)
+![Playwright](https://img.shields.io/badge/Playwright-Automation-brightgreen)
+![LangGraph](https://img.shields.io/badge/LangGraph-Orchestration-purple)
+![Groq](https://img.shields.io/badge/Groq-Llama3.3-orange)
+![Railway](https://img.shields.io/badge/Hosted%20on-Railway-black)
 
-## Table of Contents
-
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Docker Setup](#docker-setup)
-- [Configuration](#configuration)
-- [API Reference](#api-reference)
-- [Running Tests](#running-tests)
-- [How It Works](#how-it-works)
+</p>
 
 ---
 
-## Overview
+# 📌 Overview
 
-This platform eliminates the manual burden of writing and maintaining test suites. Feed it a Business Requirements Document (BRD), a user story, or an API spec — and it autonomously:
+The **Agentic AI Platform for Intelligent Test Automation** is an end-to-end AI-powered software testing platform that automatically transforms business requirement documents into executable Playwright automation suites using a collection of specialized AI agents.
 
-1. Parses and understands requirements using RAG (Retrieval-Augmented Generation) over Qdrant
-2. Generates comprehensive test scenarios (positive, negative, boundary, security, API)
-3. Writes executable Playwright scripts using the Page Object Model pattern
-4. Runs the scripts and captures screenshots, videos, and traces
-5. Diagnoses failures and self-heals broken scripts in a bounded LangGraph loop
+The platform combines **Retrieval-Augmented Generation (RAG)**, **Large Language Models (LLMs)**, **LangGraph orchestration**, **FastAPI**, **Playwright**, **PostgreSQL**, and **Streamlit** into one intelligent testing ecosystem capable of generating, executing, repairing, and analyzing automated tests with minimal human intervention.
 
-The demo domain is an **Insurance Claims Management Portal** (`agentic_test_db`), but the platform is domain-agnostic.
+The platform supports the complete QA lifecycle:
+
+- 📄 Requirement Document Parsing
+- 🧠 AI-Powered Requirement Analysis
+- 🔍 RAG-Based Context Retrieval
+- 🧪 Automated UI & API Test Scenario Generation
+- 💻 Playwright Script Generation
+- 🚀 Test Execution
+- 📸 Screenshot, Video & Trace Collection
+- 🩹 AI Self-Healing for Failed Tests
+- 🗄️ PostgreSQL Execution History
+- 📊 Interactive Analytics Dashboard
 
 ---
 
-## Architecture
+# 🌐 Live Deployment
 
+The application is deployed on **Railway** as two independent cloud services.
+
+| Service | URL |
+|----------|-----|
+| 🖥️ Streamlit Dashboard | https://amused-healing-production-7e38.up.railway.app |
+| ⚙️ FastAPI Backend | https://agentic-ai-platform-for-intelligent-test-automat-production.up.railway.app |
+| 📚 Swagger API Documentation | https://agentic-ai-platform-for-intelligent-test-automat-production.up.railway.app/docs |
+
+### Deployment Architecture
+
+- **Frontend:** Streamlit Dashboard
+- **Backend:** FastAPI REST API
+- **Database:** PostgreSQL (Railway)
+- **Vector Store:** Qdrant
+- **LLM:** Groq (Llama 3.3 70B)
+- **Hosting:** Railway
+
+The Streamlit frontend communicates with the FastAPI backend through REST APIs while all execution history, generated artifacts, and analytics are persisted in PostgreSQL.
+
+---
+
+# ✨ Key Features
+
+## 📄 Requirement Ingestion
+
+- Upload PDF, DOCX, TXT and Markdown files
+- Automatic document parsing
+- Workflow extraction
+- Validation extraction
+- API endpoint identification
+
+---
+
+## 🧠 Retrieval-Augmented Generation (RAG)
+
+- Intelligent document chunking
+- Semantic vector search
+- Context-aware prompt generation
+- Requirement retrieval using Qdrant
+- AI-enhanced document understanding
+
+---
+
+## 🤖 Multi-Agent AI Workflow
+
+The platform consists of multiple specialized AI agents.
+
+| Agent | Responsibility |
+|--------|---------------|
+| Requirement Agent | Requirement understanding and analysis |
+| Test Scenario Agent | Generates UI & API test cases |
+| Script Agent | Creates executable Playwright scripts |
+| Failure Analysis Agent | Detects failure causes |
+| Self-Healing Agent | Repairs broken Playwright scripts |
+| Report Agent | Generates QA analytics and reports |
+
+---
+
+## 🧪 Intelligent Test Generation
+
+Automatically generates:
+
+- UI Test Cases
+- API Test Cases
+- Positive Test Cases
+- Negative Test Cases
+- Boundary Tests
+- Database Assertion Tests
+
+---
+
+## 💻 Playwright Automation
+
+Supports:
+
+- Python Playwright Framework
+- Page Object Model
+- Browser Automation
+- REST API Testing
+- Screenshots
+- Video Recording
+- Playwright Traces
+- Execution Logs
+
+---
+
+## 🩹 AI Self-Healing Engine
+
+Instead of only reporting failures, the platform attempts automatic recovery.
+
+Capabilities include:
+
+- Broken locator detection
+- XPath repair
+- CSS selector repair
+- Retry execution
+- AI patch explanation
+- Healing audit logs
+
+---
+
+## 📊 Interactive Dashboard
+
+The Streamlit dashboard includes:
+
+- Dashboard Overview
+- Requirement Ingestion
+- RAG Pipeline
+- Test Scenario Generator
+- Script Studio
+- Execution Console
+- Artifact Viewer
+- Self-Healing Console
+- PostgreSQL Inspector
+- Analytics Dashboard
+- Demo Database Reset
+
+---
+
+## 🗄️ PostgreSQL Persistence
+
+Automatically stores:
+
+- Documents
+- Test Scenarios
+- Generated Scripts
+- Execution History
+- Healing Logs
+- Database Assertions
+
+Automatic database features:
+
+- Database creation
+- Schema creation
+- Table migration
+- Seed data generation
+
+---
+
+## 📸 Generated Artifacts
+
+Every execution can generate:
+
+- 📸 Screenshots
+- 🎥 Browser Videos
+- 🔍 Playwright Traces
+- 📄 Console Logs
+- 📊 Execution Reports
+- 🗄️ Database Assertion Reports
+
+---
+
+# 🏗️ High-Level Architecture
+
+```text
+Business Requirement Document
+            │
+            ▼
+     Document Parser
+            │
+            ▼
+   Requirement Agent
+            │
+            ▼
+      RAG Pipeline
+     (Qdrant Vector DB)
+            │
+            ▼
+ Test Scenario Generator
+            │
+            ▼
+ Playwright Script Agent
+            │
+            ▼
+     Execution Engine
+            │
+ ┌──────────┼──────────┐
+ ▼          ▼          ▼
+UI Tests  API Tests  DB Assertions
+            │
+            ▼
+ Self-Healing Engine
+            │
+            ▼
+ PostgreSQL Persistence
+            │
+            ▼
+ Streamlit Analytics Dashboard
 ```
-BRD / User Story / API Spec
-         │
-         ▼
-  ┌─────────────────┐
-  │ Document Parser  │  (PDF, DOCX, TXT, MD)
-  │  + RAG Pipeline  │  → Qdrant vector store
-  └────────┬────────┘
-           │
-           ▼
-  ┌─────────────────┐
-  │Requirement Agent │  Extracts structured context
-  └────────┬────────┘
-           │
-           ▼
-  ┌──────────────────────┐
-  │ Test Scenario Agent   │  Positive / Negative / Boundary
-  │                       │  Security / API Backend Logic
-  └──────────┬───────────┘
-             │
-             ▼
-  ┌──────────────────────┐
-  │ Playwright Script     │  POM UI scripts
-  │ Agent                 │  API scripts + DBAssertionHelper
-  └──────────┬───────────┘
-             │
-    ┌────────▼────────┐
-    │  LangGraph Loop  │
-    │                  │
-    │  ┌───────────┐   │
-    │  │  Execute  │◄──┤── Playwright runner
-    │  └─────┬─────┘   │     screenshots / videos / traces
-    │        │         │
-    │  ┌─────▼─────┐   │
-    │  │  Observe  │   │   All failures?
-    │  └─────┬─────┘   │
-    │        │         │
-    │  ┌─────▼─────┐   │
-    │  │   Repair  │   │   FailureAnalysisAgent
-    │  │(Self-Heal)│   │   SelfHealingAgent
-    │  └─────┬─────┘   │   → rewrites broken script
-    │        └─────────┤── retry (max 2)
-    └─────────────────┘
-             │
-             ▼
-  ┌──────────────────────┐
-  │  Report Agent         │  HTML / JSON / Markdown
-  │  PostgreSQL DB        │  Persisted run history
-  │  Streamlit Dashboard  │  Live analytics & artifact viewer
-  └──────────────────────┘
+
+---
+
+# ☁️ Deployment Architecture
+
+```text
+                    Railway Cloud
+
+        ┌───────────────────────────────┐
+        │                               │
+        │     Streamlit Dashboard       │
+        │              │                │
+        │              ▼                │
+        │      FastAPI Backend          │
+        │              │                │
+        │              ▼                │
+        │   PostgreSQL Database         │
+        │                               │
+        └───────────────────────────────┘
+                    ▲
+                    │
+               Groq LLM API
+
+                    ▲
+                    │
+              Qdrant Vector DB
 ```
 
 ---
 
-## Features
+# 🛠️ Technology Stack
 
-| Feature | Details |
-|---|---|
-| **Document Ingestion** | Ingest BRDs, user stories, API specs (PDF, DOCX, TXT, MD) into a Qdrant vector store |
-| **AI Scenario Generation** | Automatically generates Positive, Negative, Boundary, Security, and API Backend Logic test scenarios via Groq LLM |
-| **Playwright Script Studio** | Generates Page Object Model (POM) UI scripts and API test scripts with integrated `DBAssertionHelper` for direct PostgreSQL read-only validation |
-| **LangGraph Orchestration** | 5-node state graph: `Planner → Generate → Execute → Observe → Repair` with bounded retry loop |
-| **Self-Healing Engine** | Diagnoses root cause (`UI locator drift`, `API contract drift`, `backend business-logic regression`), rewrites code, and re-executes |
-| **Artifact Collection** | Per-run screenshots, video recordings (`.webm`), and Playwright trace bundles (`.zip`) |
-| **Full Report Pipeline** | HTML, JSON, and Markdown report generation with per-scenario pass/fail detail |
-| **Streamlit Dashboard** | Live execution progress, QA analytics, execution history, artifact viewer, and downloadable HTML reports |
-| **FastAPI Backend** | REST API exposing the full platform: ingestion, scenario generation, script generation, execution, and reporting |
-| **PostgreSQL Persistence** | All runs, scenarios, scripts, and results are stored in `agentic_test_db` via SQLAlchemy ORM |
-| **Docker Support** | One-command `docker compose up` brings up Postgres 17, Qdrant, FastAPI backend, and Streamlit dashboard |
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | Streamlit 1.60 |
-| Backend | FastAPI 0.141 + Uvicorn |
-| Database | PostgreSQL 17 + SQLAlchemy 2.0 |
-| LLM Engine | Groq API — `llama-3.3-70b-versatile` |
-| Agent Framework | LangGraph 1.2 + PydanticAI 2.22 |
-| Vector Store | Qdrant 1.18 (local) |
-| Browser Automation | Playwright 1.42 (Python) |
-| Testing | pytest 9.1 + pytest-playwright |
-| Observability | Logfire |
-| Language | Python 3.10 |
+| Category | Technology |
+|----------|------------|
+| Programming Language | Python 3.10+ |
+| Frontend | Streamlit |
+| Backend | FastAPI |
+| ORM | SQLAlchemy |
+| Database | PostgreSQL |
+| Automation | Playwright |
+| AI Framework | LangGraph |
+| LLM | Groq (Llama 3.3 70B) |
+| Vector Store | Qdrant |
+| Document Processing | PyPDF2, python-docx |
+| Data Processing | Pandas |
+| HTTP Client | Requests, HTTPX |
+| Deployment | Railway |
 
 ---
 
-## Project Structure
+# 📁 Project Structure
 
-```
-├── agents/                    # AI agent implementations
-│   ├── llm_client.py          #   Groq LLM client
-│   ├── requirement_agent.py   #   Parses BRD into structured context
-│   ├── test_scenario_agent.py #   Generates test scenarios via LLM
-│   ├── script_agent.py        #   Generates Playwright scripts
-│   ├── failure_agent.py       #   Root-cause analysis of failures
-│   ├── self_healing_agent.py  #   Rewrites broken scripts
-│   └── report_agent.py        #   Generates test reports
+```text
+Agentic-AI-Platform/
 │
-├── backend/
-│   └── main.py                # FastAPI application + all REST endpoints
+├── agents/
+│   ├── requirement_agent.py
+│   ├── test_scenario_agent.py
+│   ├── script_agent.py
+│   ├── failure_agent.py
+│   ├── self_healing_agent.py
+│   └── report_agent.py
 │
 ├── dashboard/
-│   ├── app.py                 # Streamlit entry point
-│   ├── pages/                 #   Home, analytics, execution history, artifact viewer, report viewer
-│   ├── components/            #   Status badges, metrics cards, report table
-│   └── services/              #   Report loader, artifact service
+│   └── app.py
 │
 ├── database/
-│   ├── models.py              # SQLAlchemy ORM models (Claim, Payout, Document, Scenario, Script, Run)
-│   ├── connection.py          # DB connection pool
-│   ├── persistence.py         # CRUD helpers
-│   └── assertions.py          # DBAssertionHelper — read-only SQL assertions for tests
+│   ├── connection.py
+│   ├── models.py
+│   ├── persistence.py
+│   └── assertions.py
 │
 ├── execution/
-│   ├── runner.py              # Top-level test runner entry point
-│   ├── runners/               #   PlaywrightUIRunner
-│   ├── browser/               #   BrowserManager, PlaywrightEngine, BrowserFactory
-│   ├── collectors/            #   Screenshot, video, trace, log, artifact collectors
-│   ├── services/              #   ExecutionService
-│   ├── models/                #   ExecutionResult, ExecutionRequest, BrowserSession, ArtifactBundle
-│   └── enums/                 #   ExecutionStatus, ExecutionType, BrowserType, ArtifactType
-│
-├── orchestration/
-│   └── graph.py               # LangGraph state graph (5-node Planner→Generate→Execute→Observe→Repair)
+│   └── runner.py
 │
 ├── ingestion/
-│   └── parser.py              # Multi-format document parser (PDF, DOCX, TXT, MD)
-│
 ├── rag/
-│   ├── pipeline.py            # RAG pipeline — chunking, embedding, Qdrant upsert + retrieval
-│   └── loader.py              # Document loader
-│
-├── reports/
-│   ├── report_generator.py    # Orchestrates report generation
-│   ├── models/                #   Report, ReportSection data models
-│   └── generators/            #   HTML, JSON, Markdown generators
-│
-├── prompts/
-│   └── system_prompts.py      # All LLM system prompts
-│
-├── shared/
-│   ├── schemas.py             # Pydantic schemas shared across modules
-│   └── logger.py              # Structured logging setup
-│
+├── orchestration/
 ├── configs/
-│   └── config.py              # Centralised settings (env-backed via pydantic-settings)
+├── docs/
+├── generated_tests/
+├── artifacts/
+│   ├── screenshots/
+│   ├── traces/
+│   ├── videos/
+│   └── qdrant_db/
 │
-├── generated_tests/           # LLM-generated Playwright test files (auto-populated)
-├── artifacts/                 # Per-run screenshots, videos, traces, logs
-├── docs/                      # Sample BRDs and policy documents for ingestion
-├── scripts/
-│   └── init_db.py             # Database initialisation + seed data
-│
-├── tests/                     # Platform unit & integration tests
-│   ├── test_platform.py
-│   ├── execution/
-│   ├── reports/
-│   ├── dashboard/
-│   └── integration/
-│
-├── docker/
-│   └── Dockerfile
-├── docker-compose.yml
+├── main.py
 ├── requirements.txt
-├── pyproject.toml
-├── pytest.ini
-└── .env.example
+└── README.md
 ```
 
 ---
+# 🚀 Installation & Setup
 
 ## Prerequisites
 
+Before running the project, ensure the following are installed:
+
 - Python 3.10+
-- PostgreSQL 17 running locally on port `5432`
-- A [Groq API key](https://console.groq.com/) (free tier available)
-- Qdrant running locally on port `6333` (or via Docker — see below)
-- Playwright browsers installed
+- PostgreSQL 17+
+- Git
+- Playwright
+- Groq API Key
+- Qdrant
 
 ---
 
-## Quick Start
-
-### 1. Clone and install dependencies
+## Clone Repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/<your-username>/Agentic-AI-Platform-for-Intelligent-Test-Automation.git
+
 cd Agentic-AI-Platform-for-Intelligent-Test-Automation
-python -m venv .venv
-.venv\Scripts\activate          # Windows
-pip install -r requirements.txt
-playwright install chromium
 ```
 
-### 2. Configure environment
+---
+
+## Create Virtual Environment
+
+### Windows
 
 ```bash
-copy .env.example .env
+python -m venv .venv
+
+.venv\Scripts\activate
 ```
 
-Edit `.env` and set your Groq API key:
+### Linux / macOS
+
+```bash
+python3 -m venv .venv
+
+source .venv/bin/activate
+```
+
+---
+
+## Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Install Playwright Browsers
+
+```bash
+playwright install
+```
+
+---
+
+# ⚙️ Environment Variables
+
+Create a `.env` file in the project root.
 
 ```env
+# PostgreSQL
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=Sandy168$
+POSTGRES_PASSWORD=your_password
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 POSTGRES_DB=agentic_test_db
 
-GROQ_API_KEY=gsk_your_key_here
+# Database URL
+DATABASE_URL=postgresql://postgres:password@localhost:5432/agentic_test_db
+
+# Groq
+GROQ_API_KEY=your_groq_api_key
 GROQ_MODEL=llama-3.3-70b-versatile
 
+# Qdrant
 QDRANT_HOST=localhost
 QDRANT_PORT=6333
-```
 
-### 3. Initialise the database
-
-```bash
-.\venv\Scripts\python scripts/init_db.py
-```
-
-This creates the `agentic_test_db` schema and seeds sample insurance claims data.
-
-### 4. Start the FastAPI backend
-
-```bash
-.\venv\Scripts\python -m uvicorn backend.main:app --reload --port 8000
-```
-
-API docs are available at `http://localhost:8000/docs`.
-
-### 5. Launch the Streamlit dashboard
-
-```bash
-.\venv\Scripts\streamlit run dashboard/app.py
-```
-
-Dashboard is available at `http://localhost:8501`.
-
-### 6. Run the test suite
-
-```bash
-.\venv\Scripts\pytest tests/ -v
+# Backend URL (for Streamlit)
+BACKEND_URL=http://localhost:8000
 ```
 
 ---
 
-## Docker Setup
+# 🗄️ Database Initialization
 
-Spin up the entire stack (Postgres 17, Qdrant, FastAPI backend, Streamlit dashboard) with a single command:
+The application automatically:
+
+- Creates PostgreSQL database
+- Creates tables
+- Performs schema migration
+- Seeds sample claims & payouts
+
+No manual SQL execution is required.
+
+---
+
+# ▶️ Running the Project Locally
+
+## Step 1 – Start FastAPI Backend
 
 ```bash
-# Set your Groq key first
-set GROQ_API_KEY=gsk_your_key_here   # Windows
-# export GROQ_API_KEY=gsk_...        # Linux/macOS
-
-docker compose up --build
+uvicorn main:app --reload
 ```
 
-| Service | URL |
-|---|---|
-| FastAPI backend | http://localhost:8000 |
-| API docs (Swagger) | http://localhost:8000/docs |
-| Streamlit dashboard | http://localhost:8501 |
-| Qdrant UI | http://localhost:6333/dashboard |
+Backend runs at:
+
+```
+http://localhost:8000
+```
+
+Swagger Documentation:
+
+```
+http://localhost:8000/docs
+```
 
 ---
 
-## Configuration
+## Step 2 – Start Streamlit Dashboard
 
-All settings are managed via environment variables and loaded through `configs/config.py` (pydantic-settings). The full list of available variables is in `.env.example`.
+```bash
+streamlit run dashboard/app.py
+```
+
+Dashboard runs at:
+
+```
+http://localhost:8501
+```
 
 ---
 
-## API Reference
+# ☁️ Railway Deployment
+
+The project is deployed as **two independent Railway services**.
+
+## 🖥️ Streamlit Dashboard
+
+https://amused-healing-production-7e38.up.railway.app
+
+Responsible for:
+
+- Dashboard UI
+- Requirement Upload
+- AI Scenario Generation
+- Script Viewer
+- Test Execution
+- Analytics
+- Self-Healing Console
+
+---
+
+## ⚙️ FastAPI Backend
+
+https://agentic-ai-platform-for-intelligent-test-automat-production.up.railway.app
+
+Responsible for:
+
+- REST APIs
+- AI Agent Orchestration
+- RAG Pipeline
+- PostgreSQL Operations
+- Test Execution
+- Database Assertions
+
+---
+
+## 📚 Swagger API Documentation
+
+https://agentic-ai-platform-for-intelligent-test-automat-production.up.railway.app/docs
+
+---
+
+# 📡 API Endpoints
 
 | Method | Endpoint | Description |
-|---|---|---|
-| `GET` | `/api/v1/health` | Platform health check |
-| `POST` | `/api/v1/ingest` | Ingest a document into Qdrant + DB |
-| `POST` | `/api/v1/scenarios/generate` | Generate test scenarios from ingested requirements |
-| `POST` | `/api/v1/scripts/generate` | Generate Playwright scripts for a scenario |
-| `POST` | `/api/v1/execute` | Execute a test script |
-| `POST` | `/api/v1/orchestrate` | Run the full LangGraph workflow |
-| `POST` | `/api/v1/reports/generate` | Generate an HTML/JSON/Markdown report |
-| `GET` | `/api/v1/claims` | List all insurance claims (demo domain) |
-| `POST` | `/api/v1/claims` | Submit a new claim |
-| `POST` | `/api/v1/claims/{id}/approve` | Approve a claim + trigger payout |
-| `POST` | `/api/v1/claims/{id}/reject` | Reject a claim |
-| `GET` | `/api/v1/payouts` | List all payout records |
+|---------|----------|-------------|
+| GET | / | Health Check |
+| GET | /docs | Swagger Documentation |
+| POST | /ingest | Upload Requirement Document |
+| POST | /generate-scenarios | Generate Test Scenarios |
+| POST | /generate-script | Generate Playwright Scripts |
+| POST | /execute | Execute Generated Tests |
+| POST | /heal | Trigger Self-Healing |
+| GET | /report | Generate Analytics Report |
 
-Full interactive documentation is served at `http://localhost:8000/docs` when the backend is running.
+> **Note:** Endpoint names may vary depending on your implementation.
 
 ---
 
-## Running Tests
+# 📊 Streamlit Dashboard Modules
 
-```bash
-# All tests
-.\venv\Scripts\pytest tests/ -v
+The dashboard consists of six major modules:
 
-# Unit tests only
-.\venv\Scripts\pytest tests/execution tests/reports tests/dashboard -v
+### 📊 Dashboard Overview
 
-# Integration tests
-.\venv\Scripts\pytest tests/integration -v
+- Live Service Status
+- PostgreSQL Metrics
+- Database Verification
+- Execution Statistics
 
-# With coverage
-.\venv\Scripts\pytest tests/ --cov=. --cov-report=html
+---
+
+### 📄 Requirement Ingestion & RAG
+
+- Upload BRDs
+- Parse Documents
+- Build RAG Context
+- Requirement Analysis
+
+---
+
+### 🧪 Test Scenario Generator
+
+- Generate UI Tests
+- Generate API Tests
+- Positive/Negative Scenarios
+- Database Assertions
+
+---
+
+### 💻 Playwright Script Studio
+
+- Generate Python Scripts
+- Page Object Models
+- Script Preview
+- API Test Scripts
+
+---
+
+### 🚀 Execution & Self-Healing
+
+- Execute Test Suite
+- Screenshot Viewer
+- Trace Download
+- Video Playback
+- Self-Healing
+- Retry Failed Tests
+
+---
+
+### 📈 Analytics & Reports
+
+- Pass Rate
+- Execution History
+- Healing Logs
+- Database Inspector
+- AI Recommendations
+
+---
+
+# 📸 Screenshots
+
+Add screenshots here for better project presentation.
+
+```
+README Images/
+
+dashboard.png
+
+requirement_ingestion.png
+
+scenario_generation.png
+
+script_studio.png
+
+execution.png
+
+analytics.png
+```
+
+Example:
+
+```markdown
+## Dashboard
+
+![Dashboard](images/dashboard.png)
 ```
 
 ---
 
-## How It Works
+# 🔮 Future Enhancements
 
-### 1. Document Ingestion
-Upload a BRD, user story, API spec, or policy document (PDF, DOCX, TXT, or Markdown). The `DocumentParser` extracts raw text, the `RAGPipeline` chunks and embeds it into Qdrant, and the `RequirementAgent` builds a structured context object that downstream agents can query.
+- Docker Containerization
+- Kubernetes Deployment
+- Jenkins CI/CD Pipeline
+- GitHub Actions Integration
+- Azure DevOps Support
+- Jira Integration
+- Parallel Playwright Execution
+- Multi-Browser Testing
+- Email Notifications
+- Slack Integration
+- AI Flaky Test Detection
+- Test Data Generation using LLMs
 
-### 2. Scenario Generation
-The `TestScenarioAgent` prompts Groq (Llama 3.3 70B) with the structured requirements and generates a rich suite of test scenarios across five categories: **Positive**, **Negative**, **Boundary**, **Security**, and **API Backend Logic**.
+---
 
-### 3. Script Generation
-The `PlaywrightScriptAgent` converts each scenario into a runnable Python test file saved to `generated_tests/`. UI tests use the **Page Object Model** pattern. API tests use `httpx` and include `DBAssertionHelper` calls that execute read-only SQL queries directly against PostgreSQL to validate backend state (e.g., verifying a payout record was created on claim approval).
+# 🤝 Contributing
 
-### 4. LangGraph Execution Loop
-The `LoopOrchestrator` runs a 5-node LangGraph state graph:
-- **Planner** — initialises state and retry budget
-- **Generate** — calls scenario and script agents
-- **Execute** — runs all scripts via the Playwright runner; collects screenshots, video, and traces per run
-- **Observe** — checks pass/fail outcomes and decides whether to repair or end
-- **Repair** — `FailureAnalysisAgent` classifies the root cause; `SelfHealingAgent` rewrites the broken script; the loop retries up to 2 times
+Contributions are welcome!
 
-### 5. Reporting & Dashboard
-The `ReportAgent` produces HTML, JSON, and Markdown reports from execution results. All run data is persisted to PostgreSQL. The Streamlit dashboard provides live execution status, historical analytics, a per-scenario artifact viewer (screenshots, videos, traces), and downloadable reports.
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature/my-feature
+```
+
+3. Commit changes
+
+```bash
+git commit -m "Added new feature"
+```
+
+4. Push branch
+
+```bash
+git push origin feature/my-feature
+```
+
+5. Open a Pull Request
+
+---
+
+# 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+# 👨‍💻 Author
+
+**Aditya Kumar**
+
+B.Tech Computer Science Student  
+SRM Institute of Science and Technology
+
+GitHub: https://github.com/<your-github>
+
+LinkedIn: https://linkedin.com/in/<your-linkedin>
+
+---
+
+# ⭐ Support
+
+If you found this project useful:
+
+⭐ Star this repository
+
+🍴 Fork the repository
+
+🛠️ Contribute to the project
+
+📢 Share it with others
+
+---
+
+## Thank You!
+
+Built with ❤️ using **FastAPI, Streamlit, PostgreSQL, Playwright, LangGraph, Groq AI, and Railway**.
